@@ -3,9 +3,10 @@
 namespace Elao\Bundle\MicroAdminBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
+/**
+ * Micro Admin Controller
+ */
 abstract class MicroAdminController extends Controller
 {
     /**
@@ -29,10 +30,8 @@ abstract class MicroAdminController extends Controller
      *
      * @return array
      */
-    protected function list(Request $request)
+    protected function list(Request $request, $models)
     {
-        $models = $this->modelManager->findAll();
-
         return ['models' => $models];
     }
 

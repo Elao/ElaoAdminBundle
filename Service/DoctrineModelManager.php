@@ -24,16 +24,6 @@ class DoctrineModelManager implements ModelManagerInterface
     protected $objectManager;
 
     /**
-     * Get a new instance of the model
-     *
-     * @return mixed
-     */
-    public function getInstance()
-    {
-        return new ($this->config->getClassname());
-    }
-
-    /**
      * Find a model
      *
      * @param array $parameters
@@ -68,11 +58,15 @@ class DoctrineModelManager implements ModelManagerInterface
     }
 
     /**
-     * Persist model
-     *
-     * @param mixed $model
-     *
-     * @return ModelManagerInterface
+     * {@inheritdoc}
+     */
+    public function getInstance()
+    {
+        return new ($this->config->getClassname());
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function persist($model)
     {
@@ -82,11 +76,7 @@ class DoctrineModelManager implements ModelManagerInterface
     }
 
     /**
-     * Delete model
-     *
-     * @param mixed $model
-     *
-     * @return ModelManagerInterface
+     * {@inheritdoc}
      */
     public function delete($model)
     {
@@ -96,9 +86,7 @@ class DoctrineModelManager implements ModelManagerInterface
     }
 
     /**
-     * Flush
-     *
-     * @return ModelManagerInterface
+     * {@inheritdoc}
      */
     public function flush()
     {

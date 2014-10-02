@@ -3,9 +3,9 @@
 namespace Elao\Bundle\MicroAdminBundle\Service;
 
 /**
- * AdminConfig
+ * Configuration
  */
-class AdminConfig implements AdminConfigInterface
+class Config implements ConfigInterface
 {
     /**
      * Model
@@ -39,9 +39,7 @@ class AdminConfig implements AdminConfigInterface
     }
 
     /**
-     * Get model classname
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getClassname()
     {
@@ -49,9 +47,7 @@ class AdminConfig implements AdminConfigInterface
     }
 
     /**
-     * Get a new instance of the model
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getFormType($action)
     {
@@ -63,9 +59,7 @@ class AdminConfig implements AdminConfigInterface
     }
 
     /**
-     * Get the success redirection url for the given model and action
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getRedirection($model, $action)
     {
