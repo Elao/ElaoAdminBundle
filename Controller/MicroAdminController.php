@@ -30,19 +30,19 @@ abstract class MicroAdminController extends Controller
      *
      * @return array
      */
-    protected function list(Request $request, $models)
+    protected function index(Request $request, $models)
     {
         return ['models' => $models];
     }
 
     /**
-     * Show a model
+     * Read a model
      *
      * @param Request $request
      *
      * @return array
      */
-    protected function show(Request $request, $model)
+    protected function read(Request $request, $model)
     {
         return ['model' => $model];
     }
@@ -54,7 +54,7 @@ abstract class MicroAdminController extends Controller
      *
      * @return array
      */
-    protected function new(Request $request)
+    protected function create(Request $request)
     {
         $model = $this->modelManager->getInstance();
 
@@ -62,14 +62,14 @@ abstract class MicroAdminController extends Controller
     }
 
     /**
-     * Edit an existing model
+     * Update an existing model
      *
      * @param Request $request
      * @param mixed $model
      *
      * @return array
      */
-    protected function edit(Request $request, $model)
+    protected function update(Request $request, $model)
     {
         return $this->form($model, 'edit');
     }
