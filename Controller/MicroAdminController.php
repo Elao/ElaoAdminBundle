@@ -86,9 +86,7 @@ abstract class MicroAdminController extends Controller
     {
         $form = $this->createForm($this->config->getFormType($action),  $model);
 
-        if ($request->isMethod('POST')) {
-
-            $form->handleRequest($request);
+        if ($form->handleRequest($request)->isSubmitted()) {
 
             if ($form->isValid()) {
 
@@ -113,9 +111,7 @@ abstract class MicroAdminController extends Controller
     {
         $form = $this->createForm('micro_admin_delete', $model);
 
-        if ($request->isMethod('POST')) {
-
-            $form->handleRequest($request);
+        if ($form->handleRequest($request)->isSubmitted()) {
 
             if ($form->isValid()) {
 
