@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="elao_micro_admin.action.index.class">Elao\Bundle\MicroAdminBundle\Action\IndexAction</parameter>
+        <parameter key="elao_micro_admin.action.read.class">Elao\Bundle\MicroAdminBundle\Action\ReadAction</parameter>
+        <parameter key="elao_micro_admin.action.create.class">Elao\Bundle\MicroAdminBundle\Action\CreateAction</parameter>
+        <parameter key="elao_micro_admin.action.update.class">Elao\Bundle\MicroAdminBundle\Action\UpdateAction</parameter>
+        <parameter key="elao_micro_admin.action.delete.class">Elao\Bundle\MicroAdminBundle\Action\DeleteAction</parameter>
+    </parameters>
+
+    <services>
+        <!-- Abstract Action-->
+        <service id="elao_micro_admin.action" abstract="true">
+            <call method="setModelManager">
+                <argument type="service" id="elao_micro_admin.model_manager.doctrine" />
+            </call>
+            <call method="setOptions"></call>
+        </service>
+    </services>
+</container>

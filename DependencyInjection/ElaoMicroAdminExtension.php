@@ -2,10 +2,13 @@
 
 namespace Elao\Bundle\MicroAdminBundle\DependencyInjection;
 
+use Exception;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Definition;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -24,5 +27,61 @@ class ElaoMicroAdminExtension extends Extension
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+
+        $loaderDefinition = $container->getDefinition('elao_micro_admin.routing_loader');
+
+        foreach ($config['administrations'] as $name => $administration) {
+            foreach ($administration['actions'] as $alias => $action) {
+
+                if (!array_key_exists($alias, $config['actions'])) {
+                    throw new Exception(sprintf('Unkown action "%s"', $alias));
+                }
+
+                $classname = $config['actions'][$alias];
+                $serviceId = sprintf('admin_action.%s.%s', $name, $alias);
+                $actionDefinition = new Definition($classname)
+
+                $container->setDefinition($serviceId, $actionDefinition);
+
+                $this->createRoute($loaderDefinition, $serviceId, $name, $alias, $action);
+            }
+        }
+    }
+
+    /**
+     * Create route
+     *
+     * @param Definition $loaderDefinition
+     * @param string $classname
+     * @param string $name
+     * @param string $alias
+     * @param array $action
+     */
+    protected function createRoute(Definition $loaderDefinition, $serviceId, $name, $alias, array $action)
+    {
+        $loaderDefinition->addMethodCall(
+            'addRoute',
+            [
+                $this->getValue($action, 'name', sprintf('%s_%s', $name, $alias)),
+                $this->getValue($action, 'pattern', sprintf('/%s/%s', $name, $alias)),
+                $this->getValue($action, 'controller', sprintf('%s:getResponse', $serviceId)),
+                $this->getValue($action, 'parameters', []),
+                $this->getValue($action, 'requirements', [])
+            ]
+        );
+    }
+
+    /**
+     * Get value
+     *
+     * @param array $config
+     * @param string $key
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    protected function getValue(array $config, $key, $default = null)
+    {
+        return isset($action[$key]) ? $action[$key] : $default;
     }
 }

@@ -24,6 +24,16 @@ class DoctrineModelManager implements ModelManagerInterface
     protected $objectManager;
 
     /**
+     * Constructor
+     *
+     * @param ObjectManager $objectManager
+     */
+    public function __construct(ObjectManager $objectManager)
+    {
+        $this->objectManager = $objectManager;
+    }
+
+    /**
      * Find a model
      *
      * @param array $parameters

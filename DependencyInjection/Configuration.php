@@ -20,9 +20,45 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('elao_micro_admin');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+            ->children()
+                ->arrayNode('actions')
+                    ->useAttributeAsKey('name')
+                    ->prototype('scalar')
+                        ->isRequired()
+                        ->cannotBeEmpty()
+                    ->end()
+                ->end()
+                ->arrayNode('administrations')
+                    ->useAttributeAsKey('name')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('model')
+                                ->isRequired()
+                                ->cannotBeEmpty()
+                            ->end()
+                            ->scalarNode('manager')
+                                ->defaultValue('elao_micro_admin.model_manager.doctrine')
+                            ->end()
+                            ->arrayNode('actions')
+                                ->useAttributeAsKey('name')
+                                ->prototype('array')
+                                    ->children()
+                                        ->arrayNode('parameters')
+                                            ->useAttributeAsKey('name')
+                                            ->prototype('array')
+                                                ->children()
+                                                    ->scalarNode('value')->isRequired()->end()
+                                                ->end()
+                                            ->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }

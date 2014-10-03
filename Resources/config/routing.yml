@@ -1,0 +1,3 @@
+ElaoMicroAdminBundle_Admin:
+    resource: .
+    type: admin
