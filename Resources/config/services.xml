@@ -11,7 +11,7 @@
 
     <services>
         <!-- Model Managers -->
-        <service id="elao_micro_admin.model_manager.doctrine" class="%elao_micro_admin.model_manager.doctrine.class%">
+        <service id="elao_micro_admin.model_manager.doctrine" class="%elao_micro_admin.model_manager.doctrine.class%" abstract="true">
             <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
 

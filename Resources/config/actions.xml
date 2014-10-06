@@ -13,12 +13,56 @@
     </parameters>
 
     <services>
-        <!-- Abstract Action-->
+        <!-- Abstract Actions -->
         <service id="elao_micro_admin.action" abstract="true">
-            <call method="setModelManager">
-                <argument type="service" id="elao_micro_admin.model_manager.doctrine" />
+            <call method="setTemplating">
+                <argument type="service" id="templating" />
             </call>
-            <call method="setOptions"></call>
+        </service>
+
+        <service
+            id="elao_micro_admin.action.index"
+            class="%elao_micro_admin.action.index.class%"
+            parent="elao_micro_admin.action"
+            abstract="true"
+        >
+            <tag name="elao_micro_admin.action" alias="index" />
+        </service>
+
+        <service
+            id="elao_micro_admin.action.read"
+            class="%elao_micro_admin.action.read.class%"
+            parent="elao_micro_admin.action"
+            abstract="true"
+        >
+            <tag name="elao_micro_admin.action" alias="read" />
+        </service>
+
+        <service
+            id="elao_micro_admin.action.create"
+            class="%elao_micro_admin.action.create.class%"
+            parent="elao_micro_admin.action"
+            abstract="true"
+        >
+            <tag name="elao_micro_admin.action" alias="create" />
+        </service>
+
+        <service
+            id="elao_micro_admin.action.update"
+            class="%elao_micro_admin.action.update.class%"
+            parent="elao_micro_admin.action"
+            abstract="true"
+        >
+            <tag name="elao_micro_admin.action" alias="update" />
+        </service>
+
+        <service
+            id="elao_micro_admin.action.delete"
+            class="%elao_micro_admin.action.delete.class%"
+            parent="elao_micro_admin.action"
+            abstract="true"
+        >
+            <tag name="elao_micro_admin.action" alias="delete" />
         </service>
     </services>
 </container>

@@ -3,15 +3,21 @@
 namespace Elao\Bundle\MicroAdminBundle\Action;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Elao\Bundle\MicroAdminBundle\Behaviour\ActionInterface;
 
 /**
  * Index Action
  */
-class IndexAction implements ActionInterface
+class IndexAction extends Action
 {
     public function getResponse(Request $request)
     {
-        return ['models' => $this->modelManager->findAll()];
+        return new Response(
+            $this->templating->render(
+                $this->view,
+                ['models' => $this->modelManager->findAll()]
+            )
+        );
     }
 }

@@ -8,7 +8,7 @@ use Elao\Bundle\MicroAdminBundle\Behaviour\ActionInterface;
 /**
  * Read Action
  */
-class ReadAction implements ActionInterface
+class ReadAction extends Action
 {
     public function getResponse(Request $request)
     {

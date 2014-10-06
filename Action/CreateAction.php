@@ -3,12 +3,11 @@
 namespace Elao\Bundle\MicroAdminBundle\Action;
 
 use Symfony\Component\HttpFoundation\Request;
-use Elao\Bundle\MicroAdminBundle\Behaviour\ActionInterface;
 
 /**
  * Create Action
  */
-class CreateAction implements ActionInterface
+class CreateAction extends Action
 {
     public function getResponse(Request $request)
     {

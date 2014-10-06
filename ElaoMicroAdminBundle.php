@@ -18,6 +18,6 @@ class ElaoMicroAdminBundle extends Bundle
     {
         parent::build($container);
 
-        $container->addCompilerPass(new ActionCompilerPass);
+        //$container->addCompilerPass(new ActionCompilerPass);
     }
 }

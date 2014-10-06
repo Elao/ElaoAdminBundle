@@ -8,7 +8,7 @@ use Elao\Bundle\MicroAdminBundle\Behaviour\ActionInterface;
 /**
  * Delete Action
  */
-class DeleteAction implements ActionInterface
+class DeleteAction extends Action
 {
     public function getResponse(Request $request)
     {

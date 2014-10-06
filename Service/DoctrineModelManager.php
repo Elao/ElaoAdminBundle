@@ -3,19 +3,13 @@
 namespace Elao\Bundle\MicroAdminBundle\Service;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Elao\Bundle\MicroAdminBundle\Behaviour\ModelManagerInterface;
 
 /**
  * Doctrine Model Manager
  */
 class DoctrineModelManager implements ModelManagerInterface
 {
-    /**
-     * Admin configuration
-     *
-     * @var AdminConfig
-     */
-    protected $config;
-
     /**
      * Object manager
      *
@@ -27,10 +21,12 @@ class DoctrineModelManager implements ModelManagerInterface
      * Constructor
      *
      * @param ObjectManager $objectManager
+     * @param string $className
      */
-    public function __construct(ObjectManager $objectManager)
+    public function __construct(ObjectManager $objectManager, $className)
     {
         $this->objectManager = $objectManager;
+        $this->className     = $className;
     }
 
     /**
@@ -64,7 +60,7 @@ class DoctrineModelManager implements ModelManagerInterface
      */
     public function getRepository()
     {
-        return $this->objectManager->getRepository($this->config->getClassname());
+        return $this->objectManager->getRepository($this->className);
     }
 
     /**
@@ -72,7 +68,7 @@ class DoctrineModelManager implements ModelManagerInterface
      */
     public function getInstance()
     {
-        return new ($this->config->getClassname());
+        return new $this->className;
     }
 
     /**
