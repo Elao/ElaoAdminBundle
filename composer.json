@@ -1,0 +1,36 @@
+{
+    "name": "elao/admin-bundle",
+    "type": "symfony-bundle",
+    "description": "Simple, powerful and extendable admin bundle.",
+    "keywords": ["elao", "admin", "crud"],
+    "homepage": "https://github.com/Elao/ElaoAdminBundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Elao",
+            "homepage": "http://www.elao.com"
+        },
+        {
+            "name": "Thomas Jarrand",
+            "homepage": "https://github.com/Tom32i"
+        },
+        {
+            "name": "Emeric Kasbarian",
+            "homepage": "https://github.com/emerick42"
+        }
+    ],
+    "require": {
+        "symfony/framework-bundle": "~2.5",
+        "symfony/form": "~2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Elao\\Bundle\\AdminBundle\\": "."
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
