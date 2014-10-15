@@ -1,9 +1,9 @@
 <?php
 
-namespace Elao\Bundle\MicroAdminBundle\Service;
+namespace Elao\Bundle\AdminBundle\Service;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Elao\Bundle\MicroAdminBundle\Behaviour\ModelManagerInterface;
+use Elao\Bundle\AdminBundle\Behaviour\ModelManagerInterface;
 
 /**
  * Doctrine Model Manager

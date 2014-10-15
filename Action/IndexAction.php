@@ -1,10 +1,10 @@
 <?php
 
-namespace Elao\Bundle\MicroAdminBundle\Action;
+namespace Elao\Bundle\AdminBundle\Action;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Elao\Bundle\MicroAdminBundle\Behaviour\ActionInterface;
+use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
 
 /**
  * Index Action

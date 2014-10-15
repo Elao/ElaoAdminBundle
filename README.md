@@ -1,5 +1,5 @@
-Elao Micro Admin Bundle
-=======================
+Elao Admin Bundle
+=================
 
 ## Stacks
 
@@ -8,7 +8,7 @@ Elao Micro Admin Bundle
 Here is an exemple of configuration for this bundle:
 
 ```
-elao_micro_admin:
+elao_admin:
     # Actions used in all administrations when the actions key is not overwritten
     default_actions: ['index', 'read', 'create', 'update', 'delete']
     administrations:
@@ -22,7 +22,7 @@ elao_micro_admin:
                 # The alias of the service used as the Action
                 index:
                     # The template used to render the response
-                    view: MicroAdminBundle:Action:create.html.twig
+                    view: AdminBundle:Action:create.html.twig
                     # The route definition of this action
                     route:
                         name: article_create

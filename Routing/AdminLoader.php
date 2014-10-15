@@ -1,13 +1,13 @@
 <?php
 
-namespace  Elao\Bundle\MicroAdminBundle\Routing;
+namespace  Elao\Bundle\AdminBundle\Routing;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
-use Elao\Bundle\MicroAdminBundle\Factory\AdministrationFactory;
+use Elao\Bundle\AdminBundle\Factory\AdministrationFactory;
 
 
 /**
@@ -33,29 +33,6 @@ class AdminLoader implements LoaderInterface
      * @var array
      */
     protected $routes = [];
-
-    /*protected $routes = [
-        'index'  => [
-            'name'    => '%s',
-            'pattern' => '/%s',
-        ],
-        'create' => [
-            'name'    => '%s_create',
-            'pattern' => '/%s/new',
-        ],
-        'read'   => [
-            'name'    => '%s_read',
-            'pattern' => '/%s/{id}',
-        ],
-        'update' => [
-            'name'    => '%s_update',
-            'pattern' => '/%s/{id}/update',
-        ],
-        'delete' => [
-            'name'    => '%s_delete',
-            'pattern' => '/%s/{id}/delete',
-        ],
-    ];*/
 
     /**
      * Construct

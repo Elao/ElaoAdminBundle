@@ -1,6 +1,6 @@
 <?php
 
-namespace Elao\Bundle\MicroAdminBundle\DependencyInjection;
+namespace Elao\Bundle\AdminBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('elao_micro_admin');
+        $rootNode = $treeBuilder->root('elao_admin');
 
         $rootNode
             ->children()
@@ -38,21 +38,11 @@ class Configuration implements ConfigurationInterface
                                 ->cannotBeEmpty()
                             ->end()
                             ->scalarNode('manager')
-                                ->defaultValue('elao_micro_admin.model_manager.doctrine')
+                                ->defaultValue('elao_admin.model_manager.doctrine')
                             ->end()
                             ->arrayNode('actions')
                                 ->useAttributeAsKey('name')
-                                ->prototype('array')
-                                    ->children()
-                                        ->arrayNode('parameters')
-                                            ->useAttributeAsKey('name')
-                                            ->prototype('array')
-                                                ->children()
-                                                    ->scalarNode('value')->isRequired()->end()
-                                                ->end()
-                                            ->end()
-                                        ->end()
-                                    ->end()
+                                ->prototype('variable')
                                 ->end()
                             ->end()
                         ->end()

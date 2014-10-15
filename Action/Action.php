@@ -1,10 +1,11 @@
 <?php
 
-namespace Elao\Bundle\MicroAdminBundle\Action;
+namespace Elao\Bundle\AdminBundle\Action;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Elao\Bundle\MicroAdminBundle\Behaviour\ActionInterface;
-use Elao\Bundle\MicroAdminBundle\Behaviour\ModelManagerInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
+use Elao\Bundle\AdminBundle\Behaviour\ModelManagerInterface;
 
 /**
 * Action
@@ -24,13 +25,6 @@ abstract class Action implements ActionInterface
      * @var EngineInterface $templating
      */
     protected $templating;
-
-    /**
-     * View
-     *
-     * @var string
-     */
-    protected $view = 'ElaoMicroAdminBundle:Action:index.html.twig';
 
     /**
      * Set model manager
@@ -56,6 +50,18 @@ abstract class Action implements ActionInterface
     public function setTemplating(EngineInterface $templating)
     {
         $this->templating = $templating;
+
+        return $this;
+    }
+
+    /**
+     * Set options
+     *
+     * @param array $options
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
 
         return $this;
     }

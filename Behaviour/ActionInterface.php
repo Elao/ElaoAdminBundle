@@ -1,8 +1,8 @@
 <?php
 
-namespace Elao\Bundle\MicroAdminBundle\Behaviour;
+namespace Elao\Bundle\AdminBundle\Behaviour;
 
-use Elao\Bundle\MicroAdminBundle\Behaviour\ActionInterface;
+use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
 
 /**
  * Action interface

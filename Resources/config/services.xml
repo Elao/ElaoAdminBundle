@@ -5,18 +5,18 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="elao_micro_admin.model_manager.doctrine.class">Elao\Bundle\MicroAdminBundle\Service\DoctrineModelManager</parameter>
-        <parameter key="elao_micro_admin.routing_loader.class">Elao\Bundle\MicroAdminBundle\Routing\AdminLoader</parameter>
+        <parameter key="elao_admin.model_manager.doctrine.class">Elao\Bundle\AdminBundle\Service\DoctrineModelManager</parameter>
+        <parameter key="elao_admin.routing_loader.class">Elao\Bundle\AdminBundle\Routing\AdminLoader</parameter>
     </parameters>
 
     <services>
         <!-- Model Managers -->
-        <service id="elao_micro_admin.model_manager.doctrine" class="%elao_micro_admin.model_manager.doctrine.class%" abstract="true">
+        <service id="elao_admin.model_manager.doctrine" class="%elao_admin.model_manager.doctrine.class%" abstract="true">
             <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
 
         <!-- Routing Loader -->
-        <service id="elao_micro_admin.routing_loader" class="%elao_micro_admin.routing_loader.class%">
+        <service id="elao_admin.routing_loader" class="%elao_admin.routing_loader.class%">
             <tag name="routing.loader" />
         </service>
     </services>

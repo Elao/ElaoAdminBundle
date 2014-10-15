@@ -1,8 +1,8 @@
 <?php
 
-namespace Elao\Bundle\MicroAdminBundle\Service;
+namespace Elao\Bundle\AdminBundle\Service;
 
-use Elao\Bundle\MicroAdminBundle\Behaviour\AdministrationInterface;
+use Elao\Bundle\AdminBundle\Behaviour\AdministrationInterface;
 
 /**
  * Administration

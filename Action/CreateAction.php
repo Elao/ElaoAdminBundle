@@ -1,6 +1,6 @@
 <?php
 
-namespace Elao\Bundle\MicroAdminBundle\Action;
+namespace Elao\Bundle\AdminBundle\Action;
 
 use Symfony\Component\HttpFoundation\Request;
 

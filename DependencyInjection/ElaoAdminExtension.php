@@ -1,10 +1,11 @@
 <?php
 
-namespace Elao\Bundle\MicroAdminBundle\DependencyInjection;
+namespace Elao\Bundle\AdminBundle\DependencyInjection;
 
 use Exception;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -16,7 +17,7 @@ use Symfony\Component\DependencyInjection\DefinitionDecorator;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class ElaoMicroAdminExtension extends Extension
+class ElaoAdminExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -31,54 +32,39 @@ class ElaoMicroAdminExtension extends Extension
         $loader->load('services.xml');
         $loader->load('actions.xml');
 
-        $loaderDefinition = $container->getDefinition('elao_micro_admin.routing_loader');
-        $actions          = $this->getActions($container);
+        $loaderDefinition = $container->getDefinition('elao_admin.routing_loader');
+        $serviceActions   = $this->getActions($container);
 
         foreach ($config['administrations'] as $name => $administration) {
 
             $managerId         = sprintf('model_manager.%s', $name);
             $managerDefinition = new DefinitionDecorator($administration['manager']);
+
             $managerDefinition->addArgument($administration['model']);
             $container->setDefinition($managerId, $managerDefinition);
 
-            foreach ($actions as $alias => $id) {
+            foreach ($administration['actions'] as $alias => $actionConfig) {
 
-                if (!array_key_exists($alias, $actions)) {
-                    throw new Exception(sprintf('Unkown action "%s"', $alias));
+                if (!array_key_exists($alias, $serviceActions)) {
+                    throw new Exception(sprintf(
+                        'Unkown action "%s", availables actions are: %s',
+                        $alias,
+                        join(', ', array_keys($serviceActions))
+                    ));
                 }
 
+
+                $parent           = $serviceActions[$alias];
                 $serviceId        = sprintf('admin_action.%s.%s', $name, $alias);
-                $actionDefinition = new DefinitionDecorator($actions[$alias]);
+                $configuration    = new $parent['configuration']($name, $alias, $serviceId);
+                $actionConfig     = $this->processConfiguration($configuration, ['action' => $actionConfig]);
+                $actionDefinition = new DefinitionDecorator($parent['id']);
+
                 $actionDefinition->addMethodCall('setModelManager', [new Reference($managerId)]);
-
                 $container->setDefinition($serviceId, $actionDefinition);
-
-                $this->createRoute($loaderDefinition, $serviceId, $name, $alias);
+                $loaderDefinition->addMethodCall('addRoute', $actionConfig['route']);
             }
         }
-    }
-
-    /**
-     * Create route
-     *
-     * @param Definition $loaderDefinition
-     * @param string $classname
-     * @param string $name
-     * @param string $alias
-     * @param array $action
-     */
-    protected function createRoute(Definition $loaderDefinition, $serviceId, $name, $alias, array $action = [])
-    {
-        $loaderDefinition->addMethodCall(
-            'addRoute',
-            [
-                $this->getValue($action, 'name', sprintf('%s_%s', $name, $alias)),
-                $this->getValue($action, 'pattern', sprintf('/%s/%s', $name, $alias)),
-                $this->getValue($action, 'controller', sprintf('%s:getResponse', $serviceId)),
-                $this->getValue($action, 'parameters', []),
-                $this->getValue($action, 'requirements', [])
-            ]
-        );
     }
 
     /**
@@ -90,11 +76,17 @@ class ElaoMicroAdminExtension extends Extension
      */
     protected function getActions(ContainerBuilder $container)
     {
-        $services = $container->findTaggedServiceIds('elao_micro_admin.action');
+        $services = $container->findTaggedServiceIds('elao_admin.action');
         $actions  = [];
 
-        foreach ($services as $id => $attributes) {
-            $actions[$attributes[0]['alias']] = $id;
+        foreach ($services as $id => $tags) {
+            foreach ($tags as $attributes) {
+                $actions[$attributes['alias']] = [
+                    'id'            => $id,
+                    'alias'         => $attributes['alias'],
+                    'configuration' => $attributes['configuration']
+                ];
+            }
         }
 
         return $actions;
@@ -111,6 +103,6 @@ class ElaoMicroAdminExtension extends Extension
      */
     protected function getValue(array $config, $key, $default = null)
     {
-        return isset($action[$key]) ? $action[$key] : $default;
+        return isset($config[$key]) ? $config[$key] : $default;
     }
 }

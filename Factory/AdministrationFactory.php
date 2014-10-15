@@ -1,9 +1,9 @@
 <?php
 
-namespace  Elao\Bundle\MicroAdminBundle\Factory;
+namespace  Elao\Bundle\AdminBundle\Factory;
 
-use Elao\Bundle\MicroAdminBundle\Behaviour\AdministrationInterface;
-use Elao\Bundle\MicroAdminBundle\Service\Administration;
+use Elao\Bundle\AdminBundle\Behaviour\AdministrationInterface;
+use Elao\Bundle\AdminBundle\Service\Administration;
 
 /**
  * Administration Factory

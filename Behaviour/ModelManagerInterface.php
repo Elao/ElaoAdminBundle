@@ -1,6 +1,6 @@
 <?php
 
-namespace Elao\Bundle\MicroAdminBundle\Behaviour;
+namespace Elao\Bundle\AdminBundle\Behaviour;
 
 /**
  * Model manager interface
