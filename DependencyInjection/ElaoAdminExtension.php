@@ -53,7 +53,6 @@ class ElaoAdminExtension extends Extension
                     ));
                 }
 
-
                 $parent           = $serviceActions[$alias];
                 $serviceId        = sprintf('admin_action.%s.%s', $name, $alias);
                 $configuration    = new $parent['configuration']($name, $alias, $serviceId);

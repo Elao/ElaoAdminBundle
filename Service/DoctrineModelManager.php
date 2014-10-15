@@ -58,7 +58,7 @@ class DoctrineModelManager implements ModelManagerInterface
      *
      * @return Doctrine\ORM\EntityRepository
      */
-    public function getRepository()
+    protected function getRepository()
     {
         return $this->objectManager->getRepository($this->className);
     }
@@ -66,7 +66,7 @@ class DoctrineModelManager implements ModelManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function getInstance()
+    public function create()
     {
         return new $this->className;
     }

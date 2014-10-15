@@ -2,8 +2,6 @@
 
 namespace Elao\Bundle\AdminBundle\Behaviour;
 
-use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
-
 /**
  * Action interface
  */

@@ -12,7 +12,7 @@ interface ModelManagerInterface
      *
      * @return mixed $model
      */
-    public function getInstance();
+    public function create();
 
     /**
      * Persist a model

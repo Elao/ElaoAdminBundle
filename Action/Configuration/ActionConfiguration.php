@@ -12,6 +12,10 @@ abstract class ActionConfiguration implements ConfigurationInterface
 {
     /**
      * Constructor
+     *
+     * @param string $administration
+     * @param string $action
+     * @param string $serviceId
      */
     public function __construct($administration, $action, $serviceId)
     {
