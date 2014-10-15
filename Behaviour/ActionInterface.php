@@ -10,16 +10,9 @@ use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
 interface ActionInterface
 {
     /**
-     * Get route name
+     * Return the http response
      *
-     * @return string
+     * @return Doctrine\Component\HttpKernel\Response
      */
-    //public function getName();
-
-    /**
-     * Get route pattern
-     *
-     * @return string
-     */
-    //public function getPattern();
+    public function getResponse();
 }
