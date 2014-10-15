@@ -8,7 +8,7 @@ use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
 use Elao\Bundle\AdminBundle\Behaviour\ModelManagerInterface;
 
 /**
-* Action
+* An action with a model manager and a templating EngineInterface
 */
 abstract class Action implements ActionInterface
 {
@@ -25,6 +25,13 @@ abstract class Action implements ActionInterface
      * @var EngineInterface $templating
      */
     protected $templating;
+
+    /**
+     * Various configuration options
+     *
+     * @var array
+     */
+    protected $options;
 
     /**
      * Set model manager

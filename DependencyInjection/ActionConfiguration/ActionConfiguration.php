@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the AdeleBundleAdmin.
+ * This file is part of the ElaoAdminBundle.
  *
  * (c) 2014 Elao <contact@elao.com>
  *
@@ -15,7 +15,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 /**
- * Action Configuration
+ * Handle routing configuration
  */
 abstract class ActionConfiguration implements ConfigurationInterface
 {

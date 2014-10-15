@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the "project".
+ * This file is part of the ElaoAdminBundle.
  *
  * (c) 2014 Elao <contact@elao.com>
  *
@@ -12,14 +12,12 @@
 namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration;
 
 /**
- * Index Action Configuration
+ * Handle specific configuration for the index action
  */
 class IndexActionConfiguration extends ActionConfiguration
 {
     /**
-     * Get config tree builder
-     *
-     * @return TreeBuilder
+     * {@inheritdoc}
      */
     protected function buildConfiguration()
     {

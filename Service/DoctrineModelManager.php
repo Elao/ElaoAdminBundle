@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the ElaoAdminBundle.
+ *
+ * (c) 2014 Elao <contact@elao.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Elao\Bundle\AdminBundle\Service;
 
 use Doctrine\Common\Persistence\ObjectManager;
@@ -11,17 +20,17 @@ use Elao\Bundle\AdminBundle\Behaviour\ModelManagerInterface;
 class DoctrineModelManager implements ModelManagerInterface
 {
     /**
-     * Object manager
+     * The default Doctrine object manager
      *
-     * @var ObjectManager
+     * @var \Doctrine\Common\Peristence\ObjectManager
      */
-    protected $objectManager;
+    private $objectManager;
 
     /**
      * Constructor
      *
-     * @param ObjectManager $objectManager
-     * @param string $className
+     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
+     * @param string                                     $className
      */
     public function __construct(ObjectManager $objectManager, $className)
     {
@@ -30,11 +39,7 @@ class DoctrineModelManager implements ModelManagerInterface
     }
 
     /**
-     * Find a model
-     *
-     * @param array $parameters
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function find(array $parameters = [])
     {
@@ -42,25 +47,11 @@ class DoctrineModelManager implements ModelManagerInterface
     }
 
     /**
-     * Find all models
-     *
-     * @param array $parameters
-     *
-     * @return Collection
+     * {@inheritdoc}
      */
     public function findAll(array $parameters = [])
     {
         return $this->getRepository()->findBy($parameters);
-    }
-
-    /**
-     * Get repository
-     *
-     * @return Doctrine\ORM\EntityRepository
-     */
-    protected function getRepository()
-    {
-        return $this->objectManager->getRepository($this->className);
     }
 
     /**
@@ -78,6 +69,8 @@ class DoctrineModelManager implements ModelManagerInterface
     {
         $this->objectManager->persist($model);
 
+        $this->flush();
+
         return $this;
     }
 
@@ -88,13 +81,27 @@ class DoctrineModelManager implements ModelManagerInterface
     {
         $this->objectManager->delete($model);
 
+        $this->flush();
+
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * Get repository
+     *
+     * @return Doctrine\ORM\EntityRepository
      */
-    public function flush()
+    private function getRepository()
+    {
+        return $this->objectManager->getRepository($this->className);
+    }
+
+    /**
+     * Flush changes
+     *
+     * @return ModelManagerInterface
+     */
+    private function flush()
     {
         $this->objectManager->flush();
 

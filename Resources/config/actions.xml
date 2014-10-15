@@ -32,56 +32,20 @@
             <tag name="elao_admin.action" alias="index" configuration="%elao_admin.action_configuration.index.class%" />
         </service>
 
-        <service
-            id="elao_admin.action.read"
-            class="%elao_admin.action.read.class%"
-            parent="elao_admin.action"
-            abstract="true"
-        >
-            <tag
-                name="elao_admin.action"
-                alias="read"
-                configuration="%elao_admin.action_configuration.read.class%"
-            />
+        <service id="elao_admin.action.read" class="%elao_admin.action.read.class%" parent="elao_admin.action" abstract="true">
+            <tag name="elao_admin.action" alias="read" configuration="%elao_admin.action_configuration.read.class%"/>
         </service>
 
-        <service
-            id="elao_admin.action.create"
-            class="%elao_admin.action.create.class%"
-            parent="elao_admin.action"
-            abstract="true"
-        >
-            <tag
-                name="elao_admin.action"
-                alias="create"
-                configuration="%elao_admin.action_configuration.create.class%"
-            />
+        <service id="elao_admin.action.create" class="%elao_admin.action.create.class%" parent="elao_admin.action" abstract="true">
+            <tag name="elao_admin.action" alias="create" configuration="%elao_admin.action_configuration.create.class%"/>
         </service>
 
-        <service
-            id="elao_admin.action.update"
-            class="%elao_admin.action.update.class%"
-            parent="elao_admin.action"
-            abstract="true"
-        >
-            <tag
-                name="elao_admin.action"
-                alias="update"
-                configuration="%elao_admin.action_configuration.update.class%"
-            />
+        <service id="elao_admin.action.update" class="%elao_admin.action.update.class%" parent="elao_admin.action" abstract="true">
+            <tag name="elao_admin.action" alias="update" configuration="%elao_admin.action_configuration.update.class%"/>
         </service>
 
-        <service
-            id="elao_admin.action.delete"
-            class="%elao_admin.action.delete.class%"
-            parent="elao_admin.action"
-            abstract="true"
-        >
-            <tag
-                name="elao_admin.action"
-                alias="delete"
-                configuration="%elao_admin.action_configuration.delete.class%"
-            />
+        <service id="elao_admin.action.delete" class="%elao_admin.action.delete.class%" parent="elao_admin.action" abstract="true">
+            <tag name="elao_admin.action" alias="delete" configuration="%elao_admin.action_configuration.delete.class%"/>
         </service>
     </services>
 </container>
