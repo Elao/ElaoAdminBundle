@@ -48,7 +48,7 @@ class ElaoAdminExtension extends Extension
 
             $managerId         = sprintf('model_manager.%s', $name);
             $managerDefinition = new DefinitionDecorator($administration['manager']);
-            $actions           = !empty($administration['actions']) ? $administration['actions'] : $config['default_actions'];
+            $actions           = $this->parseActions($administration['actions'], $config['default_actions']);
 
             $managerDefinition->addArgument($administration['model']);
             $container->setDefinition($managerId, $managerDefinition);
@@ -71,6 +71,7 @@ class ElaoAdminExtension extends Extension
                 $actionDefinition   = new DefinitionDecorator($parent['id']);
 
                 $actionDefinition->addMethodCall('setModelManager', [new Reference($managerId)]);
+                $actionDefinition->addMethodCall('setParameters', [$actionConfig['parameters']]);
                 $container->setDefinition($serviceId, $actionDefinition);
                 $loaderDefinition->addMethodCall('addRoute', $actionConfig['route']);
             }
@@ -114,5 +115,25 @@ class ElaoAdminExtension extends Extension
     protected function getValue(array $config, $key, $default = null)
     {
         return isset($config[$key]) ? $config[$key] : $default;
+    }
+
+    /**
+     * Parse actions
+     *
+     * @param array $actions
+     * @param array $defaultActions
+     *
+     * @return array
+     */
+    private function parseActions(array $actions, array $defaultActions)
+    {
+        if (!empty($actions)) {
+            return $actions;
+        }
+
+        return array_combine(
+            $defaultActions,
+            array_fill(0, count($defaultActions), [])
+        );
     }
 }

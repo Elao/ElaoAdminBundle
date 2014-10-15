@@ -3,7 +3,7 @@
 namespace Elao\Bundle\AdminBundle\Action;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\ParametersResolver\ParametersResolverInterface;
 use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
 use Elao\Bundle\AdminBundle\Behaviour\ModelManagerInterface;
 
@@ -27,11 +27,11 @@ abstract class Action implements ActionInterface
     protected $templating;
 
     /**
-     * Various configuration options
+     * Various configuration parameters
      *
      * @var array
      */
-    protected $options;
+    protected $parameters;
 
     /**
      * Set model manager
@@ -62,13 +62,13 @@ abstract class Action implements ActionInterface
     }
 
     /**
-     * Set options
+     * Set parameters
      *
-     * @param array $options
+     * @param array $parameters
      */
-    public function setOptions(array $options)
+    public function setParameters(array $parameters)
     {
-        $this->options = $options;
+        $this->parameters = $parameters;
 
         return $this;
     }

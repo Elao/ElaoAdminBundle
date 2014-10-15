@@ -11,6 +11,8 @@
 
 namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration;
 
+use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
+
 /**
  * Handle specific configuration for the index action
  */
@@ -19,17 +21,19 @@ class IndexActionConfiguration extends ActionConfiguration
     /**
      * {@inheritdoc}
      */
-    protected function buildConfiguration()
+    protected function configureParametersNode(NodeParentInterface $node)
     {
-        parent::buildConfiguration();
-
-        $this->rootNode
+        $node
+            ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('view')
+                    ->isRequired()
                     ->cannotBeEmpty()
                     ->defaultValue('ElaoAdminBundle:Action:index.html.twig')
                 ->end()
             ->end()
         ;
+
+        return $node;
     }
 }

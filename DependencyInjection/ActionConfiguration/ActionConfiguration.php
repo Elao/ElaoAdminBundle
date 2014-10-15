@@ -13,6 +13,7 @@ namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration;
 
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
 
 /**
  * Handle routing configuration
@@ -31,8 +32,6 @@ abstract class ActionConfiguration implements ConfigurationInterface
         $this->administration = $administration;
         $this->action         = $action;
         $this->serviceId      = $serviceId;
-        $this->treeBuilder    = new TreeBuilder;
-        $this->rootNode       = $this->treeBuilder->root('action');
     }
 
     /**
@@ -42,9 +41,7 @@ abstract class ActionConfiguration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $this->buildConfiguration();
-
-        return $this->treeBuilder;
+        return $this->buildConfiguration();
     }
 
     /**
@@ -52,7 +49,11 @@ abstract class ActionConfiguration implements ConfigurationInterface
      */
     protected function buildConfiguration()
     {
-        $this->rootNode
+        $treeBuilder       = new TreeBuilder;
+        $parametersBuilder = new TreeBuilder;
+        $rootNode          = $treeBuilder->root('action');
+
+        $rootNode
             ->children()
                 ->arrayNode('route')
                     ->addDefaultsIfNotSet()
@@ -80,7 +81,22 @@ abstract class ActionConfiguration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->append(
+                    $this->configureParametersNode($parametersBuilder->root('parameters'))
+                )
             ->end()
         ;
+
+        return $treeBuilder;
+    }
+
+    /**
+     * Configure parameters node
+     *
+     * @param NodeParentInterface $node
+     */
+    protected function configureParametersNode(NodeParentInterface $node)
+    {
+        return $node;
     }
 }

@@ -20,12 +20,13 @@ elao_admin:
             actions:
                 # The alias of the service used as the Action
                 index:
-                    # The template used to render the response
-                    view: AdminBundle:Action:create.html.twig
                     # The route definition of this action
                     route:
                         name: article_create
                         pattern: /article/create
+                    options:
+                        # The template used to render the response
+                        view: AdminBundle:Action:create.html.twig
                 create:
                     # Parameters here are dependent of the Action
                     form: form_name

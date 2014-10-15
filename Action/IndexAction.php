@@ -28,7 +28,7 @@ class IndexAction extends Action
     {
         return new Response(
             $this->templating->render(
-                $this->view,
+                $this->parameters['view'],
                 ['models' => $this->modelManager->findAll()]
             )
         );
