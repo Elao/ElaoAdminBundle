@@ -26,7 +26,7 @@ class IndexActionConfiguration extends ActionConfiguration
         $this->rootNode
             ->children()
                 ->scalarNode('view')
-                    ->isRequired()
+                    ->cannotBeEmpty()
                     ->defaultValue('ElaoAdminBundle:Action:index.html.twig')
                 ->end()
             ->end()

@@ -48,11 +48,12 @@ class ElaoAdminExtension extends Extension
 
             $managerId         = sprintf('model_manager.%s', $name);
             $managerDefinition = new DefinitionDecorator($administration['manager']);
+            $actions           = !empty($administration['actions']) ? $administration['actions'] : $config['default_actions'];
 
             $managerDefinition->addArgument($administration['model']);
             $container->setDefinition($managerId, $managerDefinition);
 
-            foreach ($administration['actions'] as $alias => $actionConfig) {
+            foreach ($actions as $alias => $actionConfig) {
 
                 if (!array_key_exists($alias, $serviceActions)) {
                     throw new Exception(sprintf(
@@ -62,11 +63,12 @@ class ElaoAdminExtension extends Extension
                     ));
                 }
 
-                $parent           = $serviceActions[$alias];
-                $serviceId        = sprintf('admin_action.%s.%s', $name, $alias);
-                $configuration    = new $parent['configuration']($name, $alias, $serviceId);
-                $actionConfig     = $this->processConfiguration($configuration, ['action' => $actionConfig]);
-                $actionDefinition = new DefinitionDecorator($parent['id']);
+                $parent             = $serviceActions[$alias];
+                $serviceId          = sprintf('admin_action.%s.%s', $name, $alias);
+                $configurationClass = $container->getParameter(trim($parent['configuration'], '%'));
+                $configuration      = new $configurationClass($name, $alias, $serviceId);
+                $actionConfig       = $this->processConfiguration($configuration, ['action' => $actionConfig]);
+                $actionDefinition   = new DefinitionDecorator($parent['id']);
 
                 $actionDefinition->addMethodCall('setModelManager', [new Reference($managerId)]);
                 $container->setDefinition($serviceId, $actionDefinition);

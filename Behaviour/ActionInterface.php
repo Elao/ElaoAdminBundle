@@ -11,6 +11,8 @@
 
 namespace Elao\Bundle\AdminBundle\Behaviour;
 
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Represent an executable action
  */
@@ -21,5 +23,5 @@ interface ActionInterface
      *
      * @return Doctrine\Component\HttpKernel\Response
      */
-    public function getResponse();
+    public function getResponse(Request $request);
 }

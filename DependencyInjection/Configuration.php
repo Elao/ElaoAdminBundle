@@ -31,11 +31,9 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('actions')
+                ->arrayNode('default_actions')
                     ->useAttributeAsKey('name')
-                    ->prototype('scalar')
-                        ->isRequired()
-                        ->cannotBeEmpty()
+                    ->prototype('variable')
                     ->end()
                 ->end()
                 ->arrayNode('administrations')
