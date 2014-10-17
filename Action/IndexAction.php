@@ -13,14 +13,30 @@ namespace Elao\Bundle\AdminBundle\Action;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
-use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 /**
  * The default action for index pages
  */
 class IndexAction extends Action
 {
+    /**
+     * Template engine
+     *
+     * @var EngineInterface $templating
+     */
+    protected $templating;
+
+    /**
+     * Indject dependencies
+     *
+     * @param EngineInterface $templating
+     */
+    public function __construct(EngineInterface $templating)
+    {
+        $this->templating = $templating;
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -14,9 +14,9 @@ namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration;
 use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
 
 /**
- * Handle specific configuration for the index action
+ * Handle specific configuration for the update action
  */
-class IndexActionConfiguration extends ActionConfiguration
+class UpdateActionConfiguration extends ActionConfiguration
 {
     /**
      * {@inheritdoc}
@@ -27,6 +27,10 @@ class IndexActionConfiguration extends ActionConfiguration
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('view')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('form_type')
                     ->isRequired()
                     ->cannotBeEmpty()
                 ->end()
@@ -41,7 +45,7 @@ class IndexActionConfiguration extends ActionConfiguration
      */
     protected function getRouteName()
     {
-        return sprintf('%s', $this->action->getAdministration()->getNameLowerCase());
+        return sprintf('%s_%s', $this->action->getAdministration()->getNameLowerCase(), $this->action->getAlias());
     }
 
     /**
@@ -49,7 +53,7 @@ class IndexActionConfiguration extends ActionConfiguration
      */
     protected function getRoutePattern()
     {
-        return sprintf('/%s', $this->action->getAdministration()->getNameUrl());
+        return sprintf('/%s/{id}/%s', $this->action->getAdministration()->getNameUrl(), $this->action->getAlias());
     }
 
     /**

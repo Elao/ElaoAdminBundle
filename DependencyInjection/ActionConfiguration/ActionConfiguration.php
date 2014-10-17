@@ -14,6 +14,8 @@ namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
+use Elao\Bundle\AdminBundle\DependencyInjection\Model\Administration;
+use Elao\Bundle\AdminBundle\DependencyInjection\Model\Action;
 
 /**
  * Handle routing configuration
@@ -21,17 +23,29 @@ use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
 abstract class ActionConfiguration implements ConfigurationInterface
 {
     /**
+     * Action
+     *
+     * @var Action
+     */
+    protected $action;
+
+    /**
+     * Service Id
+     *
+     * @var string
+     */
+    protected $serviceId;
+
+    /**
      * Constructor
      *
-     * @param string $administration
-     * @param string $action
+     * @param Action $action
      * @param string $serviceId
      */
-    public function __construct($administration, $action, $serviceId)
+    public function __construct(Action $action, $serviceId)
     {
-        $this->administration = $administration;
-        $this->action         = $action;
-        $this->serviceId      = $serviceId;
+        $this->action    = $action;
+        $this->serviceId = $serviceId;
     }
 
     /**
@@ -61,17 +75,17 @@ abstract class ActionConfiguration implements ConfigurationInterface
                         ->scalarNode('name')
                             ->isRequired()
                             ->cannotBeEmpty()
-                            ->defaultValue(sprintf('%s_%s', $this->administration, $this->action))
+                            ->defaultValue($this->getRouteName())
                         ->end()
                         ->scalarNode('pattern')
                             ->isRequired()
                             ->cannotBeEmpty()
-                            ->defaultValue(sprintf('/%s', $this->administration))
+                            ->defaultValue($this->getRoutePattern())
                         ->end()
                         ->scalarNode('controller')
                             ->isRequired()
                             ->cannotBeEmpty()
-                            ->defaultValue(sprintf('%s:getResponse', $this->serviceId))
+                            ->defaultValue($this->getRouteController())
                         ->end()
                         ->arrayNode('parameters')
                             ->prototype('variable')->end()
@@ -99,4 +113,25 @@ abstract class ActionConfiguration implements ConfigurationInterface
     {
         return $node;
     }
+
+    /**
+     * Get default name for route dynamically
+     *
+     * @return string
+     */
+    abstract protected function getRouteName();
+
+    /**
+     * Get default pattern for route dynamically
+     *
+     * @return string
+     */
+    abstract protected function getRoutePattern();
+
+    /**
+     * Get default controller for route dynamically
+     *
+     * @return [type]
+     */
+    abstract protected function getRouteController();
 }

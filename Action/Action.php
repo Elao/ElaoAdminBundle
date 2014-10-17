@@ -1,14 +1,21 @@
 <?php
 
+/*
+ * This file is part of the ElaoAdminBundle.
+ *
+ * (c) 2014 Elao <contact@elao.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Elao\Bundle\AdminBundle\Action;
 
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\ParametersResolver\ParametersResolverInterface;
 use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
 use Elao\Bundle\AdminBundle\Behaviour\ModelManagerInterface;
 
 /**
-* An action with a model manager and a templating EngineInterface
+* An action with a model manager
 */
 abstract class Action implements ActionInterface
 {
@@ -20,13 +27,6 @@ abstract class Action implements ActionInterface
     protected $modelManager;
 
     /**
-     * Template engine
-     *
-     * @var EngineInterface $templating
-     */
-    protected $templating;
-
-    /**
      * Various configuration parameters
      *
      * @var array
@@ -34,31 +34,13 @@ abstract class Action implements ActionInterface
     protected $parameters;
 
     /**
-     * Set model manager
+     * Inject dependencies
      *
      * @param ModelManagerInterface $modelManager
-     *
-     * @return ActionInterface
      */
     public function setModelManager(ModelManagerInterface $modelManager)
     {
         $this->modelManager = $modelManager;
-
-        return $this;
-    }
-
-    /**
-     * Set templating
-     *
-     * @param EngineInterface $templating
-     *
-     * @return ActionInterface
-     */
-    public function setTemplating(EngineInterface $templating)
-    {
-        $this->templating = $templating;
-
-        return $this;
     }
 
     /**

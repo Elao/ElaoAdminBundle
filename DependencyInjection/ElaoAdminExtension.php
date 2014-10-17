@@ -20,6 +20,8 @@ use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Elao\Bundle\AdminBundle\DependencyInjection\Model\Administration;
+use Elao\Bundle\AdminBundle\DependencyInjection\Model\ActionType;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -42,98 +44,54 @@ class ElaoAdminExtension extends Extension
         $loader->load('actions.xml');
 
         $loaderDefinition = $container->getDefinition('elao_admin.routing_loader');
-        $serviceActions   = $this->getActions($container);
+        $actionTypes      = $this->getActionTypes($container);
 
-        foreach ($config['administrations'] as $name => $administration) {
+        foreach ($config['administrations'] as $name => $options) {
 
-            $managerId         = sprintf('model_manager.%s', $name);
-            $managerDefinition = new DefinitionDecorator($administration['manager']);
-            $actions           = $this->parseActions($administration['actions'], $config['default_actions']);
+            $administration    = (new Administration($name, $options))->processActions($actionTypes);
+            $managerDefinition = new DefinitionDecorator($administration->getManager());
 
-            $managerDefinition->addArgument($administration['model']);
-            $container->setDefinition($managerId, $managerDefinition);
+            $managerDefinition->addArgument($administration->getModel());
 
-            foreach ($actions as $alias => $actionConfig) {
+            $container->setDefinition($administration->getManagerId(), $managerDefinition);
 
-                if (!array_key_exists($alias, $serviceActions)) {
-                    throw new Exception(sprintf(
-                        'Unkown action "%s", availables actions are: %s',
-                        $alias,
-                        join(', ', array_keys($serviceActions))
-                    ));
-                }
+            $actions = $administration->getActions();
 
-                $parent             = $serviceActions[$alias];
-                $serviceId          = sprintf('admin_action.%s.%s', $name, $alias);
-                $configurationClass = $container->getParameter(trim($parent['configuration'], '%'));
-                $configuration      = new $configurationClass($name, $alias, $serviceId);
-                $actionConfig       = $this->processConfiguration($configuration, ['action' => $actionConfig]);
-                $actionDefinition   = new DefinitionDecorator($parent['id']);
+            foreach ($actions as $alias => $action) {
 
-                $actionDefinition->addMethodCall('setModelManager', [new Reference($managerId)]);
-                $actionDefinition->addMethodCall('setParameters', [$actionConfig['parameters']]);
-                $container->setDefinition($serviceId, $actionDefinition);
-                $loaderDefinition->addMethodCall('addRoute', $actionConfig['route']);
+                $actionDefinition = new DefinitionDecorator($action->getParentServiceId());
+
+                $actionDefinition->addMethodCall('setModelManager', [new Reference($administration->getManagerId())]);
+                $actionDefinition->addMethodCall('setParameters', [$action->getParameters()]);
+                $loaderDefinition->addMethodCall('addRoute', $action->getRoute());
+
+                $container->setDefinition($action->getServiceId(), $actionDefinition);
             }
         }
     }
 
     /**
-     * Get actions
+     * Load action types
      *
      * @param ContainerBuilder $container
      *
      * @return array
      */
-    protected function getActions(ContainerBuilder $container)
+    protected function getActionTypes(ContainerBuilder $container)
     {
         $services = $container->findTaggedServiceIds('elao_admin.action');
         $actions  = [];
 
         foreach ($services as $id => $tags) {
             foreach ($tags as $attributes) {
-                $actions[$attributes['alias']] = [
-                    'id'            => $id,
-                    'alias'         => $attributes['alias'],
-                    'configuration' => $attributes['configuration']
-                ];
+                $actions[$attributes['alias']] = new ActionType(
+                    $id,
+                    $attributes['alias'],
+                    $container->getParameter(trim($attributes['configuration'], '%'))
+                );
             }
         }
 
         return $actions;
-    }
-
-    /**
-     * Get value
-     *
-     * @param array $config
-     * @param string $key
-     * @param mixed $default
-     *
-     * @return mixed
-     */
-    protected function getValue(array $config, $key, $default = null)
-    {
-        return isset($config[$key]) ? $config[$key] : $default;
-    }
-
-    /**
-     * Parse actions
-     *
-     * @param array $actions
-     * @param array $defaultActions
-     *
-     * @return array
-     */
-    private function parseActions(array $actions, array $defaultActions)
-    {
-        if (!empty($actions)) {
-            return $actions;
-        }
-
-        return array_combine(
-            $defaultActions,
-            array_fill(0, count($defaultActions), [])
-        );
     }
 }

@@ -22,30 +22,33 @@
 
     <services>
         <!-- Abstract Actions -->
-        <service id="elao_admin.action" abstract="true">
-            <call method="setTemplating">
-                <argument type="service" id="templating" />
-            </call>
-        </service>
+        <service id="elao_admin.action" abstract="true"></service>
 
         <service id="elao_admin.action.index" class="%elao_admin.action.index.class%" parent="elao_admin.action" abstract="true">
             <tag name="elao_admin.action" alias="index" configuration="%elao_admin.action_configuration.index.class%" />
+            <argument type="service" id="templating" />
         </service>
 
         <service id="elao_admin.action.read" class="%elao_admin.action.read.class%" parent="elao_admin.action" abstract="true">
             <tag name="elao_admin.action" alias="read" configuration="%elao_admin.action_configuration.read.class%"/>
+            <argument type="service" id="templating" />
         </service>
 
         <service id="elao_admin.action.create" class="%elao_admin.action.create.class%" parent="elao_admin.action" abstract="true">
             <tag name="elao_admin.action" alias="create" configuration="%elao_admin.action_configuration.create.class%"/>
+            <argument type="service" id="templating" />
+            <argument type="service" id="form.factory" />
         </service>
 
         <service id="elao_admin.action.update" class="%elao_admin.action.update.class%" parent="elao_admin.action" abstract="true">
             <tag name="elao_admin.action" alias="update" configuration="%elao_admin.action_configuration.update.class%"/>
+            <argument type="service" id="templating" />
+            <argument type="service" id="form.factory" />
         </service>
 
         <service id="elao_admin.action.delete" class="%elao_admin.action.delete.class%" parent="elao_admin.action" abstract="true">
             <tag name="elao_admin.action" alias="delete" configuration="%elao_admin.action_configuration.delete.class%"/>
+            <argument type="service" id="form.factory" />
         </service>
     </services>
 </container>
