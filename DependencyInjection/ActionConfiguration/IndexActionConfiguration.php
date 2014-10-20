@@ -27,7 +27,7 @@ class IndexActionConfiguration extends ActionConfiguration
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('view')
-                    ->isRequired()
+                    ->defaultValue($this->getView())
                     ->cannotBeEmpty()
                 ->end()
             ->end()
@@ -58,5 +58,18 @@ class IndexActionConfiguration extends ActionConfiguration
     protected function getRouteController()
     {
         return sprintf('%s:getResponse', $this->action->getServiceId());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getView()
+    {
+        return sprintf(
+            '%s:%s:%s.html.twig',
+            $this->action->getAdministration()->getTemplatesDirectory(),
+            $this->action->getAdministration()->getName(),
+            $this->action->getAlias()
+        );
     }
 }

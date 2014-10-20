@@ -101,6 +101,16 @@ class Administration
     }
 
     /**
+     * Get templates directory
+     *
+     * @return string
+     */
+    public function getTemplatesDirectory()
+    {
+        return $this->options['templates'];
+    }
+
+    /**
      * Get model manager service Id
      *
      * @return string

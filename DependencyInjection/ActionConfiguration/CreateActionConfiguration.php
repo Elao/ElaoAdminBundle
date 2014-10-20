@@ -27,12 +27,12 @@ class CreateActionConfiguration extends ActionConfiguration
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('view')
-                    ->isRequired()
                     ->cannotBeEmpty()
+                    ->defaultValue($this->getView())
                 ->end()
                 ->scalarNode('form_type')
-                    ->isRequired()
                     ->cannotBeEmpty()
+                    ->defaultValue($this->getFormType())
                 ->end()
             ->end()
         ;
@@ -62,5 +62,26 @@ class CreateActionConfiguration extends ActionConfiguration
     protected function getRouteController()
     {
         return sprintf('%s:getResponse', $this->action->getServiceId());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getView()
+    {
+        return sprintf(
+            '%s:%s:%s.html.twig',
+            $this->action->getAdministration()->getTemplatesDirectory(),
+            $this->action->getAdministration()->getName(),
+            $this->action->getAlias()
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getFormType()
+    {
+        return $this->action->getAdministration()->getNameLowerCase();
     }
 }
