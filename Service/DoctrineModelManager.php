@@ -24,7 +24,7 @@ class DoctrineModelManager implements ModelManagerInterface
      *
      * @var \Doctrine\Common\Peristence\ObjectManager
      */
-    private $objectManager;
+    protected $objectManager;
 
     /**
      * Constructor
@@ -91,7 +91,7 @@ class DoctrineModelManager implements ModelManagerInterface
      *
      * @return Doctrine\ORM\EntityRepository
      */
-    private function getRepository()
+    protected function getRepository()
     {
         return $this->objectManager->getRepository($this->className);
     }
@@ -101,7 +101,7 @@ class DoctrineModelManager implements ModelManagerInterface
      *
      * @return ModelManagerInterface
      */
-    private function flush()
+    protected function flush()
     {
         $this->objectManager->flush();
 

@@ -51,7 +51,7 @@ class ElaoAdminExtension extends Extension
             $administration    = (new Administration($name, $options))->processActions($actionTypes);
             $managerDefinition = new DefinitionDecorator($administration->getManager());
 
-            $managerDefinition->addArgument($administration->getModel());
+            $managerDefinition->replaceArgument(1, $administration->getModel());
 
             $container->setDefinition($administration->getManagerId(), $managerDefinition);
 

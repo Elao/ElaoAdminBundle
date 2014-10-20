@@ -13,6 +13,7 @@
         <!-- Model Managers -->
         <service id="elao_admin.model_manager.doctrine" class="%elao_admin.model_manager.doctrine.class%" abstract="true">
             <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument><!-- Model Classname --></argument>
         </service>
 
         <!-- Routing Loader -->
