@@ -62,7 +62,7 @@ class UpdateAction extends Action
         $form = $this->formFactory->create($this->getFormType($this->parameters['form_type']), $model);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
-            $this->modelManager->persist($model)->flush();
+            $this->modelManager->persist($model);
 
             return $this->redirect(
                 $this->generateUrl(
