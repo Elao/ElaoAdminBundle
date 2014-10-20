@@ -35,6 +35,15 @@ interface ModelManagerInterface
     public function findAll(array $parameters = []);
 
     /**
+     * Get target for pagination
+     *
+     * @param array $parameters
+     *
+     * @return mixed
+     */
+    public function getTarget(array $parameters = []);
+
+    /**
      * Create a new instance of the model
      *
      * @return mixed $model

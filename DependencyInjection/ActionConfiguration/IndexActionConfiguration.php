@@ -30,6 +30,10 @@ class IndexActionConfiguration extends ActionConfiguration
                     ->defaultValue($this->getView())
                     ->cannotBeEmpty()
                 ->end()
+                ->scalarNode('per_page')
+                    ->defaultValue(10)
+                    ->cannotBeEmpty()
+                ->end()
             ->end()
         ;
 

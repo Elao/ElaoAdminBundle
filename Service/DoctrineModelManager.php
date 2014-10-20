@@ -57,6 +57,17 @@ class DoctrineModelManager implements ModelManagerInterface
     /**
      * {@inheritdoc}
      */
+    public function getTarget(array $parameters = [])
+    {
+        $alias = explode('\\', $this->className);
+        $alias = strtolower(end($alias));
+
+        return $this->getRepository()->createQueryBuilder($alias);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function create()
     {
         return new $this->className;

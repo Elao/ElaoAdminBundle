@@ -14,6 +14,7 @@ namespace Elao\Bundle\AdminBundle\Action;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Knp\Component\Pager\Paginator;
 
 /**
  * The default action for index pages
@@ -28,13 +29,21 @@ class IndexAction extends Action
     protected $templating;
 
     /**
+     * Paginator
+     *
+     * @var Knp\Component\Pager\PaginatorInterface $paginator
+     */
+    protected $paginator;
+
+    /**
      * Indject dependencies
      *
      * @param EngineInterface $templating
      */
-    public function __construct(EngineInterface $templating)
+    public function __construct(EngineInterface $templating, Paginator $paginator)
     {
         $this->templating = $templating;
+        $this->paginator  = $paginator;
     }
 
     /**
@@ -42,10 +51,16 @@ class IndexAction extends Action
      */
     public function getResponse(Request $request)
     {
+        $pagination = $this->paginator->paginate(
+            $this->modelManager->getTarget(),
+            $request->query->get('page', 1),
+            $this->parameters['per_page']
+        );
+
         return new Response(
             $this->templating->render(
                 $this->parameters['view'],
-                ['models' => $this->modelManager->findAll()]
+                ['models' => $pagination]
             )
         );
     }
