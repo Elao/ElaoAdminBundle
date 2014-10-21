@@ -13,8 +13,6 @@ namespace Elao\Bundle\AdminBundle\DependencyInjection\Model;
 
 /**
  * Administration
- *
- * @author  Thomas Jarrand <thomas.jarrand@elao.com>
  */
 class Administration
 {
