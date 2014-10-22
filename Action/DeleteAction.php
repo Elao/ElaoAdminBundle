@@ -21,19 +21,14 @@ class DeleteAction extends Action
 {
     public function getResponse(Request $request)
     {
-        $model = $this->modelManager->find();
-        $form  = $this->createForm($this->formType, $model);
+        $model = $this->modelManager->find(['id' => $request->get('id')]);
+        $this->modelManager->delete($model);
 
-        if ($form->handleRequest($request)->isSubmitted()) {
-
-            if ($form->isValid()) {
-
-                $this->modelManager->delete($model)->flush();
-
-                return $this->redirect($this->redirection);
-            }
-        }
-
-        return ['form' => $form->createView()];
+        return $this->redirect(
+            $this->generateUrl(
+                $this->parameters['route']['name'],
+                $this->parameters['route']['parameters']
+            )
+        );
     }
 }
