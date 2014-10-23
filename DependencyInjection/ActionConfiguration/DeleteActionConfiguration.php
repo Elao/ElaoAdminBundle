@@ -23,6 +23,20 @@ class DeleteActionConfiguration extends ActionConfiguration
      */
     protected function configureParametersNode(NodeParentInterface $node)
     {
+        $node
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->scalarNode('view')
+                    ->cannotBeEmpty()
+                    ->defaultValue($this->getView())
+                ->end()
+                ->scalarNode('form_type')
+                    ->cannotBeEmpty()
+                    ->defaultValue('Elao\Bundle\AdminBundle\Form\Type\DeleteType')
+                ->end()
+            ->end()
+        ;
+
         return $node;
     }
 
@@ -61,13 +75,5 @@ class DeleteActionConfiguration extends ActionConfiguration
             $this->action->getAdministration()->getName(),
             $this->action->getAlias()
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getFormType()
-    {
-        return $this->action->getAdministration()->getNameLowerCase();
     }
 }

@@ -6,14 +6,14 @@
 
     <parameters>
         <!-- Action classes -->
-        <parameter key="elao_admin.action.index.class">Elao\Bundle\AdminBundle\Action\IndexAction</parameter>
+        <parameter key="elao_admin.action.list.class">Elao\Bundle\AdminBundle\Action\ListAction</parameter>
         <parameter key="elao_admin.action.read.class">Elao\Bundle\AdminBundle\Action\ReadAction</parameter>
         <parameter key="elao_admin.action.create.class">Elao\Bundle\AdminBundle\Action\CreateAction</parameter>
         <parameter key="elao_admin.action.update.class">Elao\Bundle\AdminBundle\Action\UpdateAction</parameter>
         <parameter key="elao_admin.action.delete.class">Elao\Bundle\AdminBundle\Action\DeleteAction</parameter>
 
         <!-- Action configuration classes -->
-        <parameter key="elao_admin.action_configuration.index.class">Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\IndexActionConfiguration</parameter>
+        <parameter key="elao_admin.action_configuration.list.class">Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\ListActionConfiguration</parameter>
         <parameter key="elao_admin.action_configuration.read.class">Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\ReadActionConfiguration</parameter>
         <parameter key="elao_admin.action_configuration.create.class">Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\CreateActionConfiguration</parameter>
         <parameter key="elao_admin.action_configuration.update.class">Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\UpdateActionConfiguration</parameter>
@@ -24,8 +24,8 @@
         <!-- Abstract Actions -->
         <service id="elao_admin.action" abstract="true"></service>
 
-        <service id="elao_admin.action.index" class="%elao_admin.action.index.class%" parent="elao_admin.action" abstract="true">
-            <tag name="elao_admin.action" alias="index" configuration="%elao_admin.action_configuration.index.class%" />
+        <service id="elao_admin.action.list" class="%elao_admin.action.list.class%" parent="elao_admin.action" abstract="true">
+            <tag name="elao_admin.action" alias="list" configuration="%elao_admin.action_configuration.list.class%" />
             <argument type="service" id="templating" />
             <argument type="service" id="knp_paginator" />
         </service>

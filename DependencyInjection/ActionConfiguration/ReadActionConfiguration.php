@@ -14,9 +14,9 @@ namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration;
 use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
 
 /**
- * Handle specific configuration for the list action
+ * Handle specific configuration for the read action
  */
-class ListActionConfiguration extends ActionConfiguration
+class ReadActionConfiguration extends ActionConfiguration
 {
     /**
      * {@inheritdoc}
@@ -27,12 +27,8 @@ class ListActionConfiguration extends ActionConfiguration
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('view')
+                    ->cannotBeEmpty()
                     ->defaultValue($this->getView())
-                    ->cannotBeEmpty()
-                ->end()
-                ->scalarNode('per_page')
-                    ->defaultValue(10)
-                    ->cannotBeEmpty()
                 ->end()
             ->end()
         ;
@@ -45,7 +41,7 @@ class ListActionConfiguration extends ActionConfiguration
      */
     protected function getRouteName()
     {
-        return sprintf('%s', $this->action->getAdministration()->getNameLowerCase());
+        return sprintf('%s_%s', $this->action->getAdministration()->getNameLowerCase(), $this->action->getAlias());
     }
 
     /**
@@ -53,7 +49,7 @@ class ListActionConfiguration extends ActionConfiguration
      */
     protected function getRoutePattern()
     {
-        return sprintf('/%s', $this->action->getAdministration()->getNameUrl());
+        return sprintf('/%s/{id}', $this->action->getAdministration()->getNameUrl());
     }
 
     /**

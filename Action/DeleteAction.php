@@ -19,16 +19,30 @@ use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
  */
 class DeleteAction extends Action
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getResponse(Request $request)
     {
         $model = $this->modelManager->find(['id' => $request->get('id')]);
-        $this->modelManager->delete($model);
+        $form  = $this->createForm($this->formType, $model);
 
-        return $this->redirect(
-            $this->generateUrl(
-                $this->parameters['route']['name'],
-                $this->parameters['route']['parameters']
-            )
-        );
+         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
+
+                $this->modelManager->delete($model);
+
+                return $this->redirect(
+                    $this->generateUrl(
+                        $this->parameters['route']['name'],
+                        $this->parameters['route']['parameters']
+                    )
+                );
+            }
+        }
+
+        return [
+            'form'  => $form->createView(),
+            'model' => $model,
+        ];
     }
 }
