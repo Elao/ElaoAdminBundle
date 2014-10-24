@@ -53,7 +53,7 @@ class Administration
         foreach ($this->options['actions'] as $alias => $actionOptions) {
 
             if (!array_key_exists($alias, $actionTypes)) {
-                throw new Exception(sprintf(
+                throw new \Exception(sprintf(
                     'Unkown action "%s", availables actions are: %s',
                     $alias,
                     join(', ', array_keys($actionTypes))
