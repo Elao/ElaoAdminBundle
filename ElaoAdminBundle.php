@@ -12,10 +12,21 @@
 namespace Elao\Bundle\AdminBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Elao\Bundle\AdminBundle\DependencyInjection\Compiler\AdministrationCompilerPass;
 
 /**
  * Elao Admin bundle
  */
 class ElaoAdminBundle extends Bundle
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new AdministrationCompilerPass);
+    }
 }

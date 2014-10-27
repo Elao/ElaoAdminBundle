@@ -17,11 +17,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
-use Elao\Bundle\AdminBundle\DependencyInjection\Model\Administration;
-use Elao\Bundle\AdminBundle\DependencyInjection\Model\ActionType;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -43,55 +38,6 @@ class ElaoAdminExtension extends Extension
         $loader->load('services.xml');
         $loader->load('actions.xml');
 
-        $loaderDefinition = $container->getDefinition('elao_admin.routing_loader');
-        $actionTypes      = $this->getActionTypes($container);
-
-        foreach ($config['administrations'] as $name => $options) {
-
-            $administration    = (new Administration($name, $options))->processActions($actionTypes);
-            $managerDefinition = new DefinitionDecorator($administration->getManager());
-
-            $managerDefinition->replaceArgument(1, $administration->getModel());
-
-            $container->setDefinition($administration->getManagerId(), $managerDefinition);
-
-            $actions = $administration->getActions();
-
-            foreach ($actions as $alias => $action) {
-
-                $actionDefinition = new DefinitionDecorator($action->getParentServiceId());
-
-                $actionDefinition->addMethodCall('setModelManager', [new Reference($administration->getManagerId())]);
-                $actionDefinition->addMethodCall('setParameters', [$action->getParameters()]);
-                $loaderDefinition->addMethodCall('addRoute', $action->getRoute());
-
-                $container->setDefinition($action->getServiceId(), $actionDefinition);
-            }
-        }
-    }
-
-    /**
-     * Load action types
-     *
-     * @param ContainerBuilder $container
-     *
-     * @return array
-     */
-    protected function getActionTypes(ContainerBuilder $container)
-    {
-        $services = $container->findTaggedServiceIds('elao_admin.action');
-        $actions  = [];
-
-        foreach ($services as $id => $tags) {
-            foreach ($tags as $attributes) {
-                $actions[$attributes['alias']] = new ActionType(
-                    $id,
-                    $attributes['alias'],
-                    $container->getParameter(trim($attributes['configuration'], '%'))
-                );
-            }
-        }
-
-        return $actions;
+        $container->setParameter('elao_admin.parameters.administrations', $config['administrations']);
     }
 }
