@@ -21,11 +21,16 @@ class AdministrationCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
+        $defaultActions   = $container->getParameter('elao_admin.parameters.default_actions');
         $administrations  = $container->getParameter('elao_admin.parameters.administrations');
         $loaderDefinition = $container->getDefinition('elao_admin.routing_loader');
         $actionTypes      = $this->getActionTypes($container);
 
         foreach ($administrations as $name => $options) {
+
+            if (!isset($options['actions']) || empty($options['actions'])) {
+                $options['actions'] = array_combine($defaultActions, array_fill(0, count($defaultActions), []));
+            }
 
             $administration    = (new Administration($name, $options))->processActions($actionTypes);
             $managerDefinition = new DefinitionDecorator($administration->getManager());
