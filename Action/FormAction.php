@@ -84,10 +84,9 @@ abstract class FormAction extends Action
      */
     protected function createForm($model)
     {
-        return $this->formFactory->create(
-            $this->getFormType($this->parameters['form_type']),
-            $model
-        );
+        return $this->formFactory
+            ->create($this->getFormType($this->parameters['form_type']), $model)
+            ->add('submit', 'submit');
     }
 
     /**
