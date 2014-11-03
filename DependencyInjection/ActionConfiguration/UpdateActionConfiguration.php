@@ -34,6 +34,19 @@ class UpdateActionConfiguration extends ActionConfiguration
                     ->cannotBeEmpty()
                     ->defaultValue($this->getFormType())
                 ->end()
+                ->arrayNode('redirect')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('name')
+                            ->isRequired()
+                            ->cannotBeEmpty()
+                            ->defaultValue($this->getRedirectRouteName())
+                        ->end()
+                        ->arrayNode('parameters')
+                            ->prototype('variable')->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
@@ -83,5 +96,13 @@ class UpdateActionConfiguration extends ActionConfiguration
     protected function getFormType()
     {
         return $this->action->getAdministration()->getNameLowerCase();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getRedirectRouteName()
+    {
+        return sprintf('%s', $this->action->getAdministration()->getNameLowerCase());
     }
 }

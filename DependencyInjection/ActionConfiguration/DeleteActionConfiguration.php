@@ -34,6 +34,19 @@ class DeleteActionConfiguration extends ActionConfiguration
                     ->cannotBeEmpty()
                     ->defaultValue('Elao\Bundle\AdminBundle\Form\Type\DeleteType')
                 ->end()
+                ->arrayNode('redirect')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('name')
+                            ->isRequired()
+                            ->cannotBeEmpty()
+                            ->defaultValue($this->getRedirectRouteName())
+                        ->end()
+                        ->arrayNode('parameters')
+                            ->prototype('variable')->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
@@ -75,5 +88,13 @@ class DeleteActionConfiguration extends ActionConfiguration
             $this->action->getAdministration()->getName(),
             $this->action->getAlias()
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getRedirectRouteName()
+    {
+        return sprintf('%s', $this->action->getAdministration()->getNameLowerCase());
     }
 }

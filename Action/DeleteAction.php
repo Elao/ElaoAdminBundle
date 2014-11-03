@@ -12,37 +12,34 @@
 namespace Elao\Bundle\AdminBundle\Action;
 
 use Symfony\Component\HttpFoundation\Request;
-use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Delete Action
+ * The delete action for update pages
  */
-class DeleteAction extends Action
+class DeleteAction extends FormAction
 {
     /**
      * {@inheritdoc}
      */
-    public function getResponse(Request $request)
+    protected function getModel(Request $request)
     {
         $model = $this->modelManager->find(['id' => $request->get('id')]);
-        $form  = $this->createForm($this->formType, $model);
 
-         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
-
-                $this->modelManager->delete($model);
-
-                return $this->redirect(
-                    $this->generateUrl(
-                        $this->parameters['route']['name'],
-                        $this->parameters['route']['parameters']
-                    )
-                );
-            }
+        if (!$model) {
+            throw new NotFoundHttpException;
         }
 
-        return [
-            'form'  => $form->createView(),
-            'model' => $model,
-        ];
+        return $model;
+    }
+
+    /**
+     * Persist model from form
+     *
+     * @param Form $form
+     */
+    protected function onFormValid(Form $form)
+    {
+        $this->modelManager->delete($form->getData());
     }
 }

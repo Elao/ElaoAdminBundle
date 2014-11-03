@@ -32,17 +32,4 @@ class UpdateAction extends FormAction
 
         return $model;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function createSuccessResponse()
-    {
-        return $this->redirect(
-            $this->generateUrl(
-                $this->parameters['route']['name'],
-                $this->parameters['route']['parameters']
-            )
-        );
-    }
 }

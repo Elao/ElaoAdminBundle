@@ -11,12 +11,14 @@
 
 namespace Elao\Bundle\AdminBundle\Action;
 
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\Form;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * The default action for create and update pages
@@ -38,15 +40,24 @@ abstract class FormAction extends Action
     protected $formFactory;
 
     /**
+     * Router
+     *
+     * @var RouterInterface $router
+     */
+    protected $router;
+
+    /**
      * Indject dependencies
      *
      * @param EngineInterface $templating
      * @param FormFactoryInterface $formFactory
+     * @param RouterInterface $router
      */
-    public function __construct(EngineInterface $templating, FormFactoryInterface $formFactory)
+    public function __construct(EngineInterface $templating, FormFactoryInterface $formFactory, RouterInterface $router)
     {
         $this->templating  = $templating;
         $this->formFactory = $formFactory;
+        $this->router      = $router;
     }
 
     /**
@@ -58,7 +69,7 @@ abstract class FormAction extends Action
         $form  = $this->createForm($model);
 
         if ($this->handleForm($request, $form)) {
-            $this->persistModel($form);
+            $this->onFormValid($form);
 
             return $this->createSuccessResponse($form);
         }
@@ -107,7 +118,7 @@ abstract class FormAction extends Action
      *
      * @param Form $form
      */
-    protected function persistModel(Form $form)
+    protected function onFormValid(Form $form)
     {
         $this->modelManager->persist($form->getData());
     }
@@ -117,7 +128,15 @@ abstract class FormAction extends Action
      *
      * @return Response
      */
-    abstract protected function createSuccessResponse();
+    protected function createSuccessResponse(Form $form)
+    {
+        return new RedirectResponse(
+            $this->router->generate(
+                $this->parameters['redirect']['name'],
+                $this->parameters['redirect']['parameters']
+            )
+        );
+    }
 
     /**
      * Create response

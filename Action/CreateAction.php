@@ -26,17 +26,4 @@ class CreateAction extends FormAction
     {
         return $this->modelManager->create();
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function createSuccessResponse()
-    {
-        return $this->redirect(
-            $this->generateUrl(
-                $this->parameters['route']['name'],
-                $this->parameters['route']['parameters']
-            )
-        );
-    }
 }
