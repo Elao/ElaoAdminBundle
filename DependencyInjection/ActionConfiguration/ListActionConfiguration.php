@@ -34,6 +34,17 @@ class ListActionConfiguration extends ActionConfiguration
                     ->defaultValue(10)
                     ->cannotBeEmpty()
                 ->end()
+                ->arrayNode('filters')
+                    ->canBeDisabled()
+                    ->children()
+                        ->scalarNode('form_type')
+                            ->cannotBeEmpty()
+                            ->defaultValue($this->getFilterFormType())
+                        ->end()
+                        ->scalarNode('data')
+                            ->defaultNull()
+                        ->end()
+                    ->end()
             ->end()
         ;
 
@@ -70,10 +81,19 @@ class ListActionConfiguration extends ActionConfiguration
     protected function getView()
     {
         return sprintf(
-            '%s:%s:%s.html.twig',
-            $this->action->getAdministration()->getTemplatesDirectory(),
+            ':%s:%s.html.twig',
             $this->action->getAdministration()->getName(),
             $this->action->getAlias()
         );
+    }
+
+    /**
+     * Get form type classname or service id for filter form
+     *
+     * @return string
+     */
+    protected function getFilterFormType()
+    {
+        return sprintf('%s_filter', $this->action->getAdministration()->getNameLowerCase());
     }
 }

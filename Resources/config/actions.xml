@@ -27,6 +27,7 @@
         <service id="elao_admin.action.list" class="%elao_admin.action.list.class%" parent="elao_admin.action" abstract="true">
             <tag name="elao_admin.action" alias="list" configuration="%elao_admin.action_configuration.list.class%" />
             <argument type="service" id="templating" />
+            <argument type="service" id="form.factory" />
             <argument type="service" id="knp_paginator" />
         </service>
 

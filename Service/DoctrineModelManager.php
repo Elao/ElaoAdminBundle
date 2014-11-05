@@ -59,10 +59,16 @@ class DoctrineModelManager implements ModelManagerInterface
      */
     public function getTarget(array $parameters = [])
     {
-        $alias = explode('\\', $this->className);
-        $alias = strtolower(end($alias));
+        $alias        = strtolower(substr($this->className, strrpos($this->className, '\\')+1));
+        $queryBuilder = $this->getRepository()->createQueryBuilder($alias);
 
-        return $this->getRepository()->createQueryBuilder($alias);
+        foreach ($parameters as $attribute => $value) {
+            $queryBuilder
+                ->andWhere(sprintf('%s.%s = :%s', $queryBuilder->getRootAlias(), $attribute, $attribute))
+                ->setParameter($attribute, $value);
+        }
+
+        return $queryBuilder;
     }
 
     /**
