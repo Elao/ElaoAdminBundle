@@ -11,9 +11,12 @@
 
 namespace Elao\Bundle\AdminBundle\Action;
 
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Elao\Bundle\AdminBundle\Behaviour\FilterSetInterface;
 use Knp\Component\Pager\Paginator;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 
@@ -30,6 +33,13 @@ class ListAction extends Action
     protected $templating;
 
     /**
+     * Form factory
+     *
+     * @var FormFactoryInterface $formFactory
+     */
+    protected $formFactory;
+
+    /**
      * Paginator
      *
      * @var Knp\Component\Pager\PaginatorInterface $paginator
@@ -37,14 +47,17 @@ class ListAction extends Action
     protected $paginator;
 
     /**
-     * Indject dependencies
+     * Inject dependencies
      *
      * @param EngineInterface $templating
+     * @param FormFactoryInterface $formFactory
+     * @param Paginator $paginator
      */
-    public function __construct(EngineInterface $templating, Paginator $paginator)
+    public function __construct(EngineInterface $templating, FormFactoryInterface $formFactory, Paginator $paginator)
     {
-        $this->templating = $templating;
-        $this->paginator  = $paginator;
+        $this->templating  = $templating;
+        $this->formFactory = $formFactory;
+        $this->paginator   = $paginator;
     }
 
     /**
@@ -52,10 +65,81 @@ class ListAction extends Action
      */
     public function getResponse(Request $request)
     {
-        $target     = $this->modelManager->getTarget();
+        $filterForm = $this->createFilterForm();
+
+        if ($filterForm) {
+            $filterForm->handleRequest($request);
+        }
+
+        $filters    = $this->getFilters($filterForm);
+        $target     = $this->modelManager->getTarget($filters);
         $pagination = $this->paginate($request, $target);
 
-        return $this->createResponse($pagination);
+        return $this->createResponse($pagination, $filterForm);
+    }
+
+    /**
+     * Create filter form
+     *
+     * @return Form
+     */
+    protected function createFilterForm()
+    {
+        if (!$this->parameters['filters']) {
+            return null;
+        }
+
+        $formType = $this->getFormType($this->parameters['filters']['form_type']);
+        $data     = $this->getFormData($this->parameters['filters']['data']);
+
+        return $this->formFactory
+            ->create($formType, $data)
+            ->add('reset', 'reset')
+            ->add('submit', 'submit');
+    }
+
+    /**
+     * Get form data
+     *
+     * @param mixed $data
+     *
+     * @return array
+     */
+    protected function getFormData($data)
+    {
+        if (!$data) {
+            return [];
+        }
+
+        if (!class_exists($data)) {
+            throw new \Exception(sprintf('Unknow form data class "%s".', $data));
+        }
+
+        return new $data;
+    }
+
+    /**
+     * Get filters
+     *
+     * @param Form $form
+     *
+     * @return array
+     */
+    protected function getFilters(Form $form = null)
+    {
+        if (!$form) { return []; }
+
+        $data = $form->getData();
+
+        if ($data instanceof FilterSetInterface) {
+            return $data->getFilters();
+        }
+
+        if (is_array($data)) {
+            return array_filter($data, function ($value) { return $value !== null; });
+        }
+
+        throw new \Exception(sprintf('Unknown data type for form "%s".', $form->getName()));
     }
 
     /**
@@ -82,16 +166,31 @@ class ListAction extends Action
      *
      * @return Response
      */
-    protected function createResponse(PaginationInterface $pagination, array $parameters = [])
+    protected function createResponse(PaginationInterface $pagination, Form $filterForm = null, array $parameters = [])
     {
+        $defaultParameters = ['pagination' => $pagination];
+
+        if ($filterForm) {
+            $defaultParameters['filters'] = $filterForm->createView();
+        }
+
         return new Response(
             $this->templating->render(
                 $this->parameters['view'],
-                array_merge(
-                    ['pagination' => $pagination],
-                    $parameters
-                )
+                array_merge($defaultParameters,  $parameters)
             )
         );
+    }
+
+    /**
+     * Get form type
+     *
+     * @param string $formType
+     *
+     * @return string|Symfony\Component\Form\AbstractType
+     */
+    protected function getFormType($formType)
+    {
+        return class_exists($formType) ? new $formType : $formType;
     }
 }

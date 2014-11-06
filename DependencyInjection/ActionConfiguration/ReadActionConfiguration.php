@@ -66,8 +66,7 @@ class ReadActionConfiguration extends ActionConfiguration
     protected function getView()
     {
         return sprintf(
-            '%s:%s:%s.html.twig',
-            $this->action->getAdministration()->getTemplatesDirectory(),
+            ':%s:%s.html.twig',
             $this->action->getAdministration()->getName(),
             $this->action->getAlias()
         );

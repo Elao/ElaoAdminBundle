@@ -35,11 +35,11 @@ interface ModelManagerInterface
     public function findAll(array $parameters = []);
 
     /**
-     * Get target for pagination
+     * Get target for pagination: a list or a query.
      *
      * @param array $parameters
      *
-     * @return mixed
+     * @return array|Query|QueryBuilder
      */
     public function getTarget(array $parameters = []);
 
