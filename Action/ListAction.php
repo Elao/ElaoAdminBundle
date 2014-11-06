@@ -94,6 +94,7 @@ class ListAction extends Action
 
         return $this->formFactory
             ->create($formType, $data)
+            ->add('reset', 'reset')
             ->add('submit', 'submit');
     }
 
