@@ -54,6 +54,11 @@ class AdministrationCompilerPass implements CompilerPassInterface
 
                 $actionDefinition = new DefinitionDecorator($action->getParentServiceId());
 
+                $actionDefinition->addMethodCall('setAdministration', [
+                    $administration->getName(),
+                    $administration->getNameLowerCase(),
+                    $administration->getNameUrl(),
+                ]);
                 $actionDefinition->addMethodCall('setModelManager', [new Reference($administration->getManagerId())]);
                 $actionDefinition->addMethodCall('setParameters', [$action->getParameters()]);
                 $loaderDefinition->addMethodCall('addRoute', $action->getRoute());

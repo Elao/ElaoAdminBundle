@@ -34,7 +34,31 @@ abstract class Action implements ActionInterface
     protected $parameters;
 
     /**
-     * Inject dependencies
+     * Administration information
+     *
+     * @var array
+     */
+    protected $administration;
+
+
+    /**
+     * Set administration
+     *
+     * @param string $name Camel cased name of the administration
+     * @param string $alias Lower cased name of the administration
+     * @param string $url Url safe name of the administration
+     */
+    public function setAdministration($name, $alias, $url)
+    {
+        $this->administration = [
+            'name'  => $name,
+            'alias' => $alias,
+            'url'   => $url,
+        ];
+    }
+
+    /**
+     * Set model manager
      *
      * @param ModelManagerInterface $modelManager
      */
