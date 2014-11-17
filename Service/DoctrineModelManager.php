@@ -104,6 +104,16 @@ class DoctrineModelManager implements ModelManagerInterface
     }
 
     /**
+     * Get classname
+     *
+     * @return string
+     */
+    public function getClassname()
+    {
+        return $this->className;
+    }
+
+    /**
      * Get repository
      *
      * @return Doctrine\ORM\EntityRepository

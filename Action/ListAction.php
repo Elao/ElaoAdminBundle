@@ -85,7 +85,7 @@ class ListAction extends Action
      */
     protected function createFilterForm()
     {
-        if (!$this->parameters['filters']) {
+        if (!$this->parameters['filters']['enabled']) {
             return null;
         }
 
