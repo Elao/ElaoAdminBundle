@@ -111,6 +111,18 @@ abstract class ActionConfiguration implements ConfigurationInterface
      */
     protected function configureParametersNode(NodeParentInterface $node)
     {
+        $tree = $node->addDefaultsIfNotSet()->children();
+
+        return $this->buildParametersTree($tree)->end();
+    }
+
+    /**
+     * Build parameters tree
+     *
+     * @param NodeParentInterface $node
+     */
+    protected function buildParametersTree(NodeParentInterface $node)
+    {
         return $node;
     }
 

@@ -13,6 +13,7 @@ namespace Elao\Bundle\AdminBundle\Action;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Form\Form;
 
 /**
  * The delete action for update pages

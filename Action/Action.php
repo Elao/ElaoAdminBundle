@@ -13,6 +13,7 @@ namespace Elao\Bundle\AdminBundle\Action;
 
 use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
 use Elao\Bundle\AdminBundle\Behaviour\ModelManagerInterface;
+use Elao\Bundle\AdminBundle\Behaviour\WorkflowManagerInterface;
 
 /**
 * An action with a model manager
@@ -27,35 +28,18 @@ abstract class Action implements ActionInterface
     protected $modelManager;
 
     /**
+     * Workflow manager
+     *
+     * @var WorkflowManagerInterface
+     */
+    protected $workflowManager;
+
+    /**
      * Various configuration parameters
      *
      * @var array
      */
     protected $parameters;
-
-    /**
-     * Administration information
-     *
-     * @var array
-     */
-    protected $administration;
-
-
-    /**
-     * Set administration
-     *
-     * @param string $name Camel cased name of the administration
-     * @param string $alias Lower cased name of the administration
-     * @param string $url Url safe name of the administration
-     */
-    public function setAdministration($name, $alias, $url)
-    {
-        $this->administration = [
-            'name'  => $name,
-            'alias' => $alias,
-            'url'   => $url,
-        ];
-    }
 
     /**
      * Set model manager
@@ -65,6 +49,16 @@ abstract class Action implements ActionInterface
     public function setModelManager(ModelManagerInterface $modelManager)
     {
         $this->modelManager = $modelManager;
+    }
+
+    /**
+     * Set workflow manager
+     *
+     * @param WorkflowManagerInterface $workflowManager
+     */
+    public function setWorkflowManager(WorkflowManagerInterface $workflowManager)
+    {
+        $this->workflowManager = $workflowManager;
     }
 
     /**

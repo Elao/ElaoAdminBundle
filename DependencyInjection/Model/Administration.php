@@ -35,21 +35,14 @@ class Administration
      *
      * @param string $name
      * @param array $options
+     * @param array $actionTypes
      */
-    public function __construct($name, array $options)
+    public function __construct($name, array $options, array $actionTypes)
     {
         $this->name    = $name;
         $this->options = $options;
         $this->actions = [];
-    }
 
-    /**
-     * Process actions
-     *
-     * @param array $actionTypes
-     */
-    public function processActions($actionTypes)
-    {
         foreach ($this->options['actions'] as $alias => $actionOptions) {
 
             if (!array_key_exists($alias, $actionTypes)) {
@@ -64,8 +57,6 @@ class Administration
         }
 
         unset($this->options['actions']);
-
-        return $this;
     }
 
     /**
@@ -93,9 +84,9 @@ class Administration
      *
      * @return string
      */
-    public function getManager()
+    public function getModelManager()
     {
-        return $this->options['manager'];
+        return $this->options['model_manager'];
     }
 
     /**
@@ -103,9 +94,29 @@ class Administration
      *
      * @return string
      */
-    public function getManagerId()
+    public function getModelManagerId()
     {
         return sprintf('model_manager.%s', $this->name);
+    }
+
+    /**
+     * Get workflow manager service Id
+     *
+     * @return string
+     */
+    public function getWorkflowManager()
+    {
+        return $this->options['workflow_manager'];
+    }
+
+    /**
+     * Get workflow manager service Id
+     *
+     * @return string
+     */
+    public function getWorkflowManagerId()
+    {
+        return sprintf('workflow_manager.%s', $this->name);
     }
 
     /**

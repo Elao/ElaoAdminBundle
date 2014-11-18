@@ -21,19 +21,14 @@ class ReadActionConfiguration extends ActionConfiguration
     /**
      * {@inheritdoc}
      */
-    protected function configureParametersNode(NodeParentInterface $node)
+    protected function buildParametersTree(NodeParentInterface $node)
     {
-        $node
-            ->addDefaultsIfNotSet()
-            ->children()
-                ->scalarNode('view')
-                    ->cannotBeEmpty()
-                    ->defaultValue($this->getView())
-                ->end()
+        return $node
+            ->scalarNode('view')
+                ->cannotBeEmpty()
+                ->defaultValue($this->getView())
             ->end()
         ;
-
-        return $node;
     }
 
     /**

@@ -21,36 +21,22 @@ class DeleteActionConfiguration extends ActionConfiguration
     /**
      * {@inheritdoc}
      */
-    protected function configureParametersNode(NodeParentInterface $node)
+    protected function buildParametersTree(NodeParentInterface $node)
     {
-        $node
-            ->addDefaultsIfNotSet()
-            ->children()
-                ->scalarNode('view')
-                    ->cannotBeEmpty()
-                    ->defaultValue($this->getView())
-                ->end()
-                ->scalarNode('form_type')
-                    ->cannotBeEmpty()
-                    ->defaultValue('Elao\Bundle\AdminBundle\Form\Type\DeleteType')
-                ->end()
-                ->arrayNode('redirect')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->scalarNode('name')
-                            ->isRequired()
-                            ->cannotBeEmpty()
-                            ->defaultValue($this->getRedirectRouteName())
-                        ->end()
-                        ->arrayNode('parameters')
-                            ->prototype('variable')->end()
-                        ->end()
-                    ->end()
-                ->end()
+        return $node
+            ->scalarNode('view')
+                ->cannotBeEmpty()
+                ->defaultValue($this->getView())
+            ->end()
+            ->scalarNode('form_type')
+                ->cannotBeEmpty()
+                ->defaultValue('Elao\Bundle\AdminBundle\Form\Type\DeleteType')
+            ->end()
+            ->scalarNode('redirection')
+                ->cannotBeEmpty()
+                ->defaultValue($this->getRedirection())
             ->end()
         ;
-
-        return $node;
     }
 
     /**
@@ -90,10 +76,12 @@ class DeleteActionConfiguration extends ActionConfiguration
     }
 
     /**
-     * {@inheritdoc}
+     * Get redirection
+     *
+     * @return string
      */
-    protected function getRedirectRouteName()
+    protected function getRedirection()
     {
-        return sprintf('%s', $this->action->getAdministration()->getNameLowerCase());
+        return 'list';
     }
 }

@@ -47,6 +47,28 @@ class Action
             $this->type->getConfiguration($this),
             ['action' => $options]
         );
+
+        $this->options['parameters'] = array_merge(
+            $this->options['parameters'],
+            $this->getDefaultParameters()
+        );
+    }
+
+    /**
+     * Get default parameters
+     *
+     * @return array
+     */
+    private function getDefaultParameters()
+    {
+        return [
+            'alias'          => $this->getAlias(),
+            'administration' => [
+                'name'  => $this->administration->getName(),
+                'alias' => $this->administration->getNameLowerCase(),
+                'url'   => $this->administration->getNameUrl(),
+            ]
+        ];
     }
 
     /**
@@ -97,6 +119,16 @@ class Action
     public function getRoute()
     {
         return $this->options['route'];
+    }
+
+    /**
+     * Get redirection
+     *
+     * @return array
+     */
+    public function getRedirection()
+    {
+        return $this->options['redirection'];
     }
 
     /**

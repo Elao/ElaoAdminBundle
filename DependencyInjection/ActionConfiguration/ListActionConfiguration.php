@@ -21,34 +21,30 @@ class ListActionConfiguration extends ActionConfiguration
     /**
      * {@inheritdoc}
      */
-    protected function configureParametersNode(NodeParentInterface $node)
+    protected function buildParametersTree(NodeParentInterface $node)
     {
-        $node
-            ->addDefaultsIfNotSet()
-            ->children()
-                ->scalarNode('view')
-                    ->defaultValue($this->getView())
-                    ->cannotBeEmpty()
-                ->end()
-                ->scalarNode('per_page')
-                    ->defaultValue(10)
-                    ->cannotBeEmpty()
-                ->end()
-                ->arrayNode('filters')
-                    ->canBeDisabled()
-                    ->children()
-                        ->scalarNode('form_type')
-                            ->cannotBeEmpty()
-                            ->defaultValue($this->getFilterFormType())
-                        ->end()
-                        ->scalarNode('data')
-                            ->defaultNull()
-                        ->end()
+        return $node
+            ->scalarNode('view')
+                ->defaultValue($this->getView())
+                ->cannotBeEmpty()
+            ->end()
+            ->scalarNode('per_page')
+                ->defaultValue(10)
+                ->cannotBeEmpty()
+            ->end()
+            ->arrayNode('filters')
+                ->canBeDisabled()
+                ->children()
+                    ->scalarNode('form_type')
+                        ->cannotBeEmpty()
+                        ->defaultValue($this->getFilterFormType())
                     ->end()
+                    ->scalarNode('data')
+                        ->defaultNull()
+                    ->end()
+                ->end()
             ->end()
         ;
-
-        return $node;
     }
 
     /**

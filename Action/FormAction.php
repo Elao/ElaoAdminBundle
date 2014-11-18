@@ -130,12 +130,19 @@ abstract class FormAction extends Action
      */
     protected function createSuccessResponse(Form $form)
     {
-        return new RedirectResponse(
-            $this->router->generate(
-                $this->parameters['redirect']['name'],
-                $this->parameters['redirect']['parameters']
-            )
-        );
+        return new RedirectResponse($this->getSuccessUrl($form->getData()));
+    }
+
+    /**
+     * Get success url for given model
+     *
+     * @param mixed $data
+     *
+     * @return string
+     */
+    protected function getSuccessUrl($data)
+    {
+        return $this->workflowManager->getUrl($this->parameters['redirection'], $data);
     }
 
     /**

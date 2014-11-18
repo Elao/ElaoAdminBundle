@@ -18,6 +18,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Elao\Bundle\AdminBundle\DependencyInjection\Model\Administration;
+use Elao\Bundle\AdminBundle\DependencyInjection\Model\Action;
 use Elao\Bundle\AdminBundle\DependencyInjection\Model\ActionType;
 
 /**
@@ -41,31 +42,74 @@ class AdministrationCompilerPass implements CompilerPassInterface
                 $options['actions'] = array_combine($defaultActions, array_fill(0, count($defaultActions), []));
             }
 
-            $administration    = (new Administration($name, $options))->processActions($actionTypes);
-            $managerDefinition = new DefinitionDecorator($administration->getManager());
+            $administration = new Administration($name, $options, $actionTypes);
 
-            $managerDefinition->replaceArgument(1, $administration->getModel());
+            $container->setDefinition(
+                $administration->getModelManagerId(),
+                $this->getModelManagerDefinition($administration)
+            );
 
-            $container->setDefinition($administration->getManagerId(), $managerDefinition);
+            $workflowManagerDefinition = $this->getWorkflowManagerDefinition($administration);
+
+            $container->setDefinition($administration->getWorkflowManagerId(), $workflowManagerDefinition);
 
             $actions = $administration->getActions();
 
             foreach ($actions as $alias => $action) {
-
-                $actionDefinition = new DefinitionDecorator($action->getParentServiceId());
-
-                $actionDefinition->addMethodCall('setAdministration', [
-                    $administration->getName(),
-                    $administration->getNameLowerCase(),
-                    $administration->getNameUrl(),
-                ]);
-                $actionDefinition->addMethodCall('setModelManager', [new Reference($administration->getManagerId())]);
-                $actionDefinition->addMethodCall('setParameters', [$action->getParameters()]);
+                $container->setDefinition($action->getServiceId(), $this->getActionDefinition($action));
+                $workflowManagerDefinition->addMethodCall('addAction', [$alias, $action->getRoute()]);
                 $loaderDefinition->addMethodCall('addRoute', $action->getRoute());
-
-                $container->setDefinition($action->getServiceId(), $actionDefinition);
             }
         }
+    }
+
+    /**
+     * Register model manager service for given Administration
+     *
+     * @param Administration $administration
+     *
+     * @return DefinitionDecorator
+     */
+    protected function getModelManagerDefinition(Administration $administration)
+    {
+        $definition = new DefinitionDecorator($administration->getModelManager());
+
+        $definition->replaceArgument(1, $administration->getModel());
+
+        return $definition;
+    }
+
+    /**
+     * Register workflow manager service for given Administration
+     *
+     * @param Administration $administration
+     *
+     * @return DefinitionDecorator
+     */
+    protected function getWorkflowManagerDefinition(Administration $administration)
+    {
+        $definition = new DefinitionDecorator($administration->getWorkflowManager());
+
+        return $definition;
+    }
+
+    /**
+     * Get action service definition
+     *
+     * @param Action $action
+     *
+     * @return DefinitionDecorator
+     */
+    protected function getActionDefinition(Action $action)
+    {
+        $administration = $action->getAdministration();
+        $definition     = new DefinitionDecorator($action->getParentServiceId());
+
+        $definition->addMethodCall('setModelManager', [new Reference($administration->getModelManagerId())]);
+        $definition->addMethodCall('setWorkflowManager', [new Reference($administration->getWorkflowManagerId())]);
+        $definition->addMethodCall('setParameters', [$action->getParameters()]);
+
+        return $definition;
     }
 
     /**
