@@ -8,6 +8,7 @@
         <!-- Action classes -->
         <parameter key="elao_admin.action.list.class">Elao\Bundle\AdminBundle\Action\ListAction</parameter>
         <parameter key="elao_admin.action.read.class">Elao\Bundle\AdminBundle\Action\ReadAction</parameter>
+        <parameter key="elao_admin.action.form.class">Elao\Bundle\AdminBundle\Action\FormAction</parameter>
         <parameter key="elao_admin.action.create.class">Elao\Bundle\AdminBundle\Action\CreateAction</parameter>
         <parameter key="elao_admin.action.update.class">Elao\Bundle\AdminBundle\Action\UpdateAction</parameter>
         <parameter key="elao_admin.action.delete.class">Elao\Bundle\AdminBundle\Action\DeleteAction</parameter>
@@ -21,9 +22,10 @@
     </parameters>
 
     <services>
-        <!-- Abstract Actions -->
+        <!-- Abstract Action -->
         <service id="elao_admin.action" abstract="true"></service>
 
+        <!-- List action -->
         <service id="elao_admin.action.list" class="%elao_admin.action.list.class%" parent="elao_admin.action" abstract="true">
             <tag name="elao_admin.action" alias="list" configuration="%elao_admin.action_configuration.list.class%" />
             <argument type="service" id="templating" />
@@ -31,29 +33,29 @@
             <argument type="service" id="knp_paginator" />
         </service>
 
+        <!-- Read action -->
         <service id="elao_admin.action.read" class="%elao_admin.action.read.class%" parent="elao_admin.action" abstract="true">
             <tag name="elao_admin.action" alias="read" configuration="%elao_admin.action_configuration.read.class%"/>
             <argument type="service" id="templating" />
         </service>
 
-        <service id="elao_admin.action.create" class="%elao_admin.action.create.class%" parent="elao_admin.action" abstract="true">
+        <!-- Form Abstract Action -->
+        <service id="elao_admin.action.form" parent="elao_admin.action" abstract="true">
+            <argument type="service" id="templating" />
+            <argument type="service" id="form.factory" />
+        </service>
+
+        <!-- Form actions -->
+        <service id="elao_admin.action.create" class="%elao_admin.action.create.class%" parent="elao_admin.action.form" abstract="true">
             <tag name="elao_admin.action" alias="create" configuration="%elao_admin.action_configuration.create.class%"/>
-            <argument type="service" id="templating" />
-            <argument type="service" id="form.factory" />
-            <argument type="service" id="router" />
         </service>
 
-        <service id="elao_admin.action.update" class="%elao_admin.action.update.class%" parent="elao_admin.action" abstract="true">
+        <service id="elao_admin.action.update" class="%elao_admin.action.update.class%" parent="elao_admin.action.form" abstract="true">
             <tag name="elao_admin.action" alias="update" configuration="%elao_admin.action_configuration.update.class%"/>
-            <argument type="service" id="templating" />
-            <argument type="service" id="form.factory" />
-            <argument type="service" id="router" />
         </service>
 
-        <service id="elao_admin.action.delete" class="%elao_admin.action.delete.class%" parent="elao_admin.action" abstract="true">
+        <service id="elao_admin.action.delete" class="%elao_admin.action.delete.class%" parent="elao_admin.action.form" abstract="true">
             <tag name="elao_admin.action" alias="delete" configuration="%elao_admin.action_configuration.delete.class%"/>
-            <argument type="service" id="form.factory" />
-            <argument type="service" id="router" />
         </service>
     </services>
 </container>

@@ -40,24 +40,15 @@ abstract class FormAction extends Action
     protected $formFactory;
 
     /**
-     * Router
-     *
-     * @var RouterInterface $router
-     */
-    protected $router;
-
-    /**
      * Indject dependencies
      *
      * @param EngineInterface $templating
      * @param FormFactoryInterface $formFactory
-     * @param RouterInterface $router
      */
-    public function __construct(EngineInterface $templating, FormFactoryInterface $formFactory, RouterInterface $router)
+    public function __construct(EngineInterface $templating, FormFactoryInterface $formFactory)
     {
         $this->templating  = $templating;
         $this->formFactory = $formFactory;
-        $this->router      = $router;
     }
 
     /**
