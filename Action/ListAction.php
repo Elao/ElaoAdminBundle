@@ -75,7 +75,7 @@ class ListAction extends Action
         $target     = $this->modelManager->getTarget($filters);
         $pagination = $this->paginate($request, $target);
 
-        return $this->createResponse($pagination, $filterForm);
+        return $this->createResponse($this->getViewParameters($request, $pagination, $filterForm));
     }
 
     /**
@@ -127,7 +127,9 @@ class ListAction extends Action
      */
     protected function getFilters(Form $form = null)
     {
-        if (!$form) { return []; }
+        if (!$form) {
+            return [];
+        }
 
         $data = $form->getData();
 
@@ -136,7 +138,9 @@ class ListAction extends Action
         }
 
         if (is_array($data)) {
-            return array_filter($data, function ($value) { return $value !== null; });
+            return array_filter($data, function ($value) {
+                return $value !== null;
+            });
         }
 
         throw new \Exception(sprintf('Unknown data type for form "%s".', $form->getName()));
@@ -161,25 +165,35 @@ class ListAction extends Action
     /**
      * Create response
      *
-     * @param PaginationInterface $pagination
      * @param array $parameters
      *
      * @return Response
      */
-    protected function createResponse(PaginationInterface $pagination, Form $filterForm = null, array $parameters = [])
+    protected function createResponse(array $parameters = [])
     {
-        $defaultParameters = ['pagination' => $pagination];
+        return new Response(
+            $this->templating->render($this->parameters['view'], $parameters)
+        );
+    }
+
+    /**
+     * Get view parameters
+     *
+     * @param Request $request
+     * @param PaginationInterface $pagination
+     * @param Form $filterForm
+     *
+     * @return array
+     */
+    protected function getViewParameters(Request $request, PaginationInterface $pagination, Form $filterForm = null)
+    {
+        $parameters = ['pagination' => $pagination];
 
         if ($filterForm) {
-            $defaultParameters['filters'] = $filterForm->createView();
+            $parameters['filters'] = $filterForm->createView();
         }
 
-        return new Response(
-            $this->templating->render(
-                $this->parameters['view'],
-                array_merge($defaultParameters,  $parameters)
-            )
-        );
+        return $parameters;
     }
 
     /**

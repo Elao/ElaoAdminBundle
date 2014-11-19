@@ -65,7 +65,7 @@ abstract class FormAction extends Action
             return $this->createSuccessResponse($request, $form);
         }
 
-        return $this->createResponse($form);
+        return $this->createResponse($this->getViewParameters($request, $form));
     }
 
     /**
@@ -142,22 +142,28 @@ abstract class FormAction extends Action
     /**
      * Create response
      *
-     * @param Form $form
      * @param array $parameters
      *
      * @return Response
      */
-    protected function createResponse($form, array $parameters = [])
+    protected function createResponse(array $parameters = [])
     {
         return new Response(
-            $this->templating->render(
-                $this->parameters['view'],
-                array_merge(
-                    ['form' => $form->createView()],
-                    $parameters
-                )
-            )
+            $this->templating->render($this->parameters['view'], $parameters)
         );
+    }
+
+    /**
+     * Get view parameters
+     *
+     * @param Request $request
+     * @param Form $form
+     *
+     * @return array
+     */
+    protected function getViewParameters(Request $request, Form $form)
+    {
+        return ['form' => $form->createView()];
     }
 
     /**
