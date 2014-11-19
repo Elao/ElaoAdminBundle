@@ -43,4 +43,20 @@ class DeleteAction extends FormAction
     {
         $this->modelManager->delete($form->getData());
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function notifyFormValid(Form $form)
+    {
+        $this->notifier->notifySuccess('elao_admin.notify.delete.success');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function notifyFormError(Form $form)
+    {
+        $this->notifier->notifyError('elao_admin.notify.delete.error');
+    }
 }

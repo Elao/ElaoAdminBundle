@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
+use Elao\Bundle\AdminBundle\Behaviour\NotifierInterface;
 
 /**
  * The default action for create and update pages
@@ -40,15 +41,24 @@ abstract class FormAction extends Action
     protected $formFactory;
 
     /**
+     * Notifier
+     *
+     * @var NotifierInterface $notifier
+     */
+    protected $notifier;
+
+    /**
      * Indject dependencies
      *
      * @param EngineInterface $templating
      * @param FormFactoryInterface $formFactory
+     * @param SessionInterface $session
      */
-    public function __construct(EngineInterface $templating, FormFactoryInterface $formFactory)
+    public function __construct(EngineInterface $templating, FormFactoryInterface $formFactory, NotifierInterface $notifier)
     {
         $this->templating  = $templating;
         $this->formFactory = $formFactory;
+        $this->notifier    = $notifier;
     }
 
     /**
@@ -61,8 +71,12 @@ abstract class FormAction extends Action
 
         if ($this->handleForm($request, $form)) {
             $this->onFormValid($form);
+            $this->notifyFormValid($form);
 
             return $this->createSuccessResponse($request, $form);
+
+        } else if ($form->isSubmitted() && !$form->isValid()){
+            $this->notifyFormError($form);
         }
 
         return $this->createResponse($form);
@@ -112,6 +126,26 @@ abstract class FormAction extends Action
     protected function onFormValid(Form $form)
     {
         $this->modelManager->persist($form->getData());
+    }
+
+    /**
+     * Notify form valid
+     *
+     * @param Form $form
+     */
+    protected function notifyFormValid(Form $form)
+    {
+        $this->notifier->notifySuccess('elao_admin.notify.form.success');
+    }
+
+    /**
+     * Notify form error
+     *
+     * @param Form $form
+     */
+    protected function notifyFormError(Form $form)
+    {
+        $this->notifier->notifyError('elao_admin.notify.form.error');
     }
 
     /**
