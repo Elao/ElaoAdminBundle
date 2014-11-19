@@ -100,23 +100,23 @@ class Administration
     }
 
     /**
-     * Get workflow manager service Id
+     * Get route resolver service Id
      *
      * @return string
      */
-    public function getWorkflowManager()
+    public function getRouteResolver()
     {
-        return $this->options['workflow_manager'];
+        return $this->options['route_resolver'];
     }
 
     /**
-     * Get workflow manager service Id
+     * Get route resolver service Id
      *
      * @return string
      */
-    public function getWorkflowManagerId()
+    public function getRouteResolverId()
     {
-        return sprintf('workflow_manager.%s', $this->name);
+        return sprintf('route_resolver.%s', $this->name);
     }
 
     /**

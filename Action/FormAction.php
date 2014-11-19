@@ -62,7 +62,7 @@ abstract class FormAction extends Action
         if ($this->handleForm($request, $form)) {
             $this->onFormValid($form);
 
-            return $this->createSuccessResponse($form);
+            return $this->createSuccessResponse($request, $form);
         }
 
         return $this->createResponse($form);
@@ -117,11 +117,14 @@ abstract class FormAction extends Action
     /**
      * Create success response
      *
+     * @param Request $request
+     * @param Form $form
+     *
      * @return Response
      */
-    protected function createSuccessResponse(Form $form)
+    protected function createSuccessResponse(Request $request, Form $form)
     {
-        return new RedirectResponse($this->getSuccessUrl($form->getData()));
+        return new RedirectResponse($this->getSuccessUrl($request, $form->getData()));
     }
 
     /**
@@ -131,9 +134,9 @@ abstract class FormAction extends Action
      *
      * @return string
      */
-    protected function getSuccessUrl($data)
+    protected function getSuccessUrl(Request $request, $data)
     {
-        return $this->workflowManager->getUrl($this->parameters['redirection'], $data);
+        return $this->routeResolver->getUrl($this->parameters['redirection'], $request, $data);
     }
 
     /**

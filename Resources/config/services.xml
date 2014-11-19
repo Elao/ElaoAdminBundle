@@ -6,7 +6,7 @@
 
     <parameters>
         <parameter key="elao_admin.model_manager.doctrine.class">Elao\Bundle\AdminBundle\Service\DoctrineModelManager</parameter>
-        <parameter key="elao_admin.workflow_manager.class">Elao\Bundle\AdminBundle\Service\WorkflowManager</parameter>
+        <parameter key="elao_admin.route_resolver.class">Elao\Bundle\AdminBundle\Service\RouteResolver</parameter>
         <parameter key="elao_admin.routing_loader.class">Elao\Bundle\AdminBundle\Routing\AdminLoader</parameter>
     </parameters>
 
@@ -17,8 +17,8 @@
             <argument><!-- Model Classname --></argument>
         </service>
 
-        <!-- Workflow Managers -->
-        <service id="elao_admin.workflow_manager" class="%elao_admin.workflow_manager.class%" abstract="true">
+        <!-- Route Resolvers -->
+        <service id="elao_admin.route_resolver" class="%elao_admin.route_resolver.class%" abstract="true">
             <argument type="service" id="router" />
         </service>
 

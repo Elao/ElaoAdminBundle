@@ -49,15 +49,15 @@ class AdministrationCompilerPass implements CompilerPassInterface
                 $this->getModelManagerDefinition($administration)
             );
 
-            $workflowManagerDefinition = $this->getWorkflowManagerDefinition($administration);
+            $routeResolverDefinition = $this->getRouteResolverDefinition($administration);
 
-            $container->setDefinition($administration->getWorkflowManagerId(), $workflowManagerDefinition);
+            $container->setDefinition($administration->getRouteResolverId(), $routeResolverDefinition);
 
             $actions = $administration->getActions();
 
             foreach ($actions as $alias => $action) {
                 $container->setDefinition($action->getServiceId(), $this->getActionDefinition($action));
-                $workflowManagerDefinition->addMethodCall('addAction', [$alias, $action->getRoute()]);
+                $routeResolverDefinition->addMethodCall('addAction', [$alias, $action->getRoute()]);
                 $loaderDefinition->addMethodCall('addRoute', $action->getRoute());
             }
         }
@@ -80,15 +80,15 @@ class AdministrationCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * Register workflow manager service for given Administration
+     * Register route resolver service for given Administration
      *
      * @param Administration $administration
      *
      * @return DefinitionDecorator
      */
-    protected function getWorkflowManagerDefinition(Administration $administration)
+    protected function getRouteResolverDefinition(Administration $administration)
     {
-        $definition = new DefinitionDecorator($administration->getWorkflowManager());
+        $definition = new DefinitionDecorator($administration->getRouteResolver());
 
         return $definition;
     }
@@ -106,7 +106,7 @@ class AdministrationCompilerPass implements CompilerPassInterface
         $definition     = new DefinitionDecorator($action->getParentServiceId());
 
         $definition->addMethodCall('setModelManager', [new Reference($administration->getModelManagerId())]);
-        $definition->addMethodCall('setWorkflowManager', [new Reference($administration->getWorkflowManagerId())]);
+        $definition->addMethodCall('setRouteResolver', [new Reference($administration->getRouteResolverId())]);
         $definition->addMethodCall('setParameters', [$action->getParameters()]);
 
         return $definition;

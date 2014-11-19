@@ -13,7 +13,7 @@ namespace Elao\Bundle\AdminBundle\Action;
 
 use Elao\Bundle\AdminBundle\Behaviour\ActionInterface;
 use Elao\Bundle\AdminBundle\Behaviour\ModelManagerInterface;
-use Elao\Bundle\AdminBundle\Behaviour\WorkflowManagerInterface;
+use Elao\Bundle\AdminBundle\Behaviour\RouteResolverInterface;
 
 /**
 * An action with a model manager
@@ -28,11 +28,11 @@ abstract class Action implements ActionInterface
     protected $modelManager;
 
     /**
-     * Workflow manager
+     * Route resolver
      *
-     * @var WorkflowManagerInterface
+     * @var RouteResolverInterface
      */
-    protected $workflowManager;
+    protected $routeResolver;
 
     /**
      * Various configuration parameters
@@ -52,13 +52,13 @@ abstract class Action implements ActionInterface
     }
 
     /**
-     * Set workflow manager
+     * Set route resolver
      *
-     * @param WorkflowManagerInterface $workflowManager
+     * @param RouteResolverInterface $routeResolver
      */
-    public function setWorkflowManager(WorkflowManagerInterface $workflowManager)
+    public function setRouteResolver(RouteResolverInterface $routeResolver)
     {
-        $this->workflowManager = $workflowManager;
+        $this->routeResolver = $routeResolver;
     }
 
     /**
