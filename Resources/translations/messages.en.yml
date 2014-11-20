@@ -1,8 +1,11 @@
 elao_admin:
     notify:
-        form:
-            success: Item has been saved.
-            error: Item has not been saved !
+        create:
+            success:    Your content has been successfully created.
+            error:      This content contains errors and can't be created.
+        update:
+            success:    Your changes has been successfully saved.
+            error:      This changes contains errors and can't be saved.
         delete:
-            success: Item has been deleted.
-            error: Item has not been deleted !
+            success:    Your content has been successfully deleted.
+            error:      This content can't be deleted.
