@@ -13,6 +13,7 @@ namespace Elao\Bundle\AdminBundle\Action;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,7 +53,7 @@ abstract class FormAction extends Action
      *
      * @param EngineInterface $templating
      * @param FormFactoryInterface $formFactory
-     * @param SessionInterface $session
+     * @param NotifierInterface $notifier
      */
     public function __construct(EngineInterface $templating, FormFactoryInterface $formFactory, NotifierInterface $notifier)
     {
@@ -70,13 +71,13 @@ abstract class FormAction extends Action
         $form  = $this->createForm($model);
 
         if ($this->handleForm($request, $form)) {
-            $this->onFormValid($form);
-            $this->notifyFormValid($form);
+            if ($form->isValid()) {
+                $this->onFormValid($form);
 
-            return $this->createSuccessResponse($request, $form);
-
-        } else if ($form->isSubmitted() && !$form->isValid()){
-            $this->notifyFormError($form);
+                return $this->createSuccessResponse($request, $form);
+            } else {
+                $this->onFormInvalid($form);
+            }
         }
 
         return $this->createResponse($this->getViewParameters($request, $form));
@@ -115,37 +116,29 @@ abstract class FormAction extends Action
      */
     protected function handleForm(Request $request, Form $form)
     {
-        return $form->handleRequest($request)->isSubmitted() && $form->isValid();
+        return $form->handleRequest($request)->isSubmitted();
     }
 
     /**
-     * Persist model from form
+     * On form valid
      *
      * @param Form $form
      */
     protected function onFormValid(Form $form)
     {
         $this->modelManager->persist($form->getData());
+
+        $this->notifier->notifySuccess($this->getNotifyMessage($form, 'success'));
     }
 
     /**
-     * Notify form valid
+     * On form invalid
      *
      * @param Form $form
      */
-    protected function notifyFormValid(Form $form)
+    protected function onFormInvalid(Form $form)
     {
-        $this->notifier->notifySuccess('elao_admin.notify.form.success');
-    }
-
-    /**
-     * Notify form error
-     *
-     * @param Form $form
-     */
-    protected function notifyFormError(Form $form)
-    {
-        $this->notifier->notifyError('elao_admin.notify.form.error');
+        $this->notifier->notifyError($this->getNotifyMessage($form, 'error'));
     }
 
     /**
@@ -210,5 +203,18 @@ abstract class FormAction extends Action
     protected function getFormType($formType)
     {
         return class_exists($formType) ? new $formType : $formType;
+    }
+
+    /**
+     * Get message for the given event
+     *
+     * @param Form $form
+     * @param string $event Event: 'success', 'error', 'warning', 'notice'
+     *
+     * @return string
+     */
+    protected function getNotifyMessage(Form $form, $event)
+    {
+        return sprintf('elao_admin.notify.%s.%s', $this->parameters['alias'], $event);
     }
 }
