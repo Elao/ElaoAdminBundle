@@ -8,6 +8,7 @@
         <parameter key="elao_admin.model_manager.doctrine.class">Elao\Bundle\AdminBundle\Service\DoctrineModelManager</parameter>
         <parameter key="elao_admin.route_resolver.class">Elao\Bundle\AdminBundle\Service\RouteResolver</parameter>
         <parameter key="elao_admin.routing_loader.class">Elao\Bundle\AdminBundle\Routing\AdminLoader</parameter>
+        <parameter key="elao_admin.notifier.flash_message.class">Elao\Bundle\AdminBundle\Service\FlashMessageNotifier</parameter>
     </parameters>
 
     <services>
@@ -25,6 +26,11 @@
         <!-- Routing Loader -->
         <service id="elao_admin.routing_loader" class="%elao_admin.routing_loader.class%">
             <tag name="routing.loader" />
+        </service>
+
+        <!-- Notifier -->
+        <service id="elao_admin.notifier" class="%elao_admin.notifier.flash_message.class%">
+            <argument type="service" id="session" />
         </service>
     </services>
 </container>
