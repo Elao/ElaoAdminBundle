@@ -43,6 +43,7 @@
         <service id="elao_admin.action.form" parent="elao_admin.action" abstract="true">
             <argument type="service" id="templating" />
             <argument type="service" id="form.factory" />
+            <argument type="service" id="elao_admin.notifier" />
         </service>
 
         <!-- Form actions -->

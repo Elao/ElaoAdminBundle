@@ -1,0 +1,8 @@
+elao_admin:
+    notify:
+        form:
+            success: Item has been saved.
+            error: Item has not been saved !
+        delete:
+            success: Item has been deleted.
+            error: Item has not been deleted !
