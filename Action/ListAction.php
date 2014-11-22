@@ -202,12 +202,14 @@ class ListAction extends Action
      *
      * @return array
      */
-    protected function getViewParameters(Request $request, PaginationInterface $models, Form $filterForm = null)
+    protected function getViewParameters(Request $request, $models, Form $filterForm = null)
     {
+        $parameters = [];
+
         if ($models instanceof PaginationInterface) {
-            $defaultParameters = ['pagination' => $models];
+            $parameters = ['pagination' => $models];
         } else {
-            $defaultParameters = ['models' => $models];
+            $parameters = ['models' => $models];
         }
 
         if ($filterForm) {
