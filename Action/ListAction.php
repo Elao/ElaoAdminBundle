@@ -71,11 +71,10 @@ class ListAction extends Action
             $filterForm->handleRequest($request);
         }
 
-        $filters    = $this->getFilters($filterForm);
-        $target     = $this->modelManager->getTarget($filters);
-        $pagination = $this->paginate($request, $target);
+        $filters = $this->getFilters($filterForm);
+        $models  = $this->getModels($request, $filters);
 
-        return $this->createResponse($pagination, $filterForm);
+        return $this->createResponse($models, $filterForm);
     }
 
     /**
@@ -143,6 +142,23 @@ class ListAction extends Action
     }
 
     /**
+     * Get models
+     *
+     * @param Request $request
+     * @param array $filters
+     *
+     * @return PaginationInterface|array
+     */
+    public function getModels(Request $request, array $filters = [])
+    {
+        if (!$this->parameters['pagination']['enabled']) {
+            return $this->modelManager->findAll($filters);
+        }
+
+        return $this->paginate($request, $this->modelManager->getTarget($filters));
+    }
+
+    /**
      * Paginate the query/list of item
      *
      * @param Request $request
@@ -161,14 +177,18 @@ class ListAction extends Action
     /**
      * Create response
      *
-     * @param PaginationInterface $pagination
+     * @param array|PaginationInterface $models
      * @param array $parameters
      *
      * @return Response
      */
-    protected function createResponse(PaginationInterface $pagination, Form $filterForm = null, array $parameters = [])
+    protected function createResponse($models, Form $filterForm = null, array $parameters = [])
     {
-        $defaultParameters = ['pagination' => $pagination];
+        if ($models instanceof PaginationInterface) {
+            $defaultParameters = ['pagination' => $pagination];
+        } else {
+            $defaultParameters = ['models' => $models];
+        }
 
         if ($filterForm) {
             $defaultParameters['filters'] = $filterForm->createView();
