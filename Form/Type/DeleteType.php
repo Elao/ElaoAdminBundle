@@ -14,20 +14,13 @@ namespace Elao\Bundle\AdminBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\True;
 
 /**
  * Delete form type
  */
 class DeleteType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->add('confirm', 'checkbox', ['required' => true]);
-    }
-
     /**
      * {@inheritdoc}
      */

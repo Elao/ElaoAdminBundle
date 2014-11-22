@@ -47,7 +47,20 @@ class ReadAction extends Action
     {
         $model = $this->getModel($request);
 
-        return $this->createResponse($model);
+        return $this->createResponse($this->getViewParameters($request, $model));
+    }
+
+    /**
+     * Get view parameters
+     *
+     * @param Request $request
+     * @param mixed $model
+     *
+     * @return array
+     */
+    protected function getViewParameters(Request $request, $model)
+    {
+        return ['model' => $model];
     }
 
     /**
@@ -71,21 +84,14 @@ class ReadAction extends Action
     /**
      * Create response
      *
-     * @param mixed $model
      * @param array $parameters
      *
      * @return Response
      */
-    protected function createResponse($model, array $parameters = [])
+    protected function createResponse(array $parameters = [])
     {
         return new Response(
-            $this->templating->render(
-                $this->parameters['view'],
-                array_merge(
-                    ['model' => $model],
-                    $parameters
-                )
-            )
+            $this->templating->render($this->parameters['view'], $parameters)
         );
     }
 }
