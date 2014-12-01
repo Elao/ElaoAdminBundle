@@ -45,7 +45,7 @@ class Action
         $this->administration = $administration;
         $this->options        = (new Processor)->processConfiguration(
             $this->type->getConfiguration($this),
-            ['action' => $options]
+            $options
         );
 
         $this->options['parameters'] = array_merge(
@@ -119,6 +119,26 @@ class Action
     public function getRoute()
     {
         return $this->options['route'];
+    }
+
+    /**
+     * Is action secure?
+     *
+     * @return boolean
+     */
+    public function isSecure()
+    {
+        return isset($this->options['security']);
+    }
+
+    /**
+     * Get security
+     *
+     * @return array
+     */
+    public function getSecurity()
+    {
+        return $this->options['security'];
     }
 
     /**

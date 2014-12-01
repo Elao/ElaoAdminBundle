@@ -36,6 +36,7 @@ class ElaoAdminExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         $loader->load('services.xml');
+        $loader->load('events.xml');
         $loader->load('actions.xml');
 
         $container->setParameter('elao_admin.parameters.default_actions', $config['default_actions']);

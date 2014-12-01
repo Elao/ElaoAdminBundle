@@ -31,10 +31,11 @@ class AdministrationCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $defaultActions   = $container->getParameter('elao_admin.parameters.default_actions');
-        $administrations  = $container->getParameter('elao_admin.parameters.administrations');
-        $loaderDefinition = $container->getDefinition('elao_admin.routing_loader');
-        $actionTypes      = $this->getActionTypes($container);
+        $defaultActions        = $container->getParameter('elao_admin.parameters.default_actions');
+        $administrations       = $container->getParameter('elao_admin.parameters.administrations');
+        $routeLoaderDefinition = $container->getDefinition('elao_admin.routing_loader');
+        $securityDefinition    = $container->getDefinition('elao_admin.event.subscriber.security');
+        $actionTypes           = $this->getActionTypes($container);
 
         foreach ($administrations as $name => $options) {
 
@@ -58,7 +59,11 @@ class AdministrationCompilerPass implements CompilerPassInterface
             foreach ($actions as $alias => $action) {
                 $container->setDefinition($action->getServiceId(), $this->getActionDefinition($action));
                 $routeResolverDefinition->addMethodCall('addAction', [$alias, $action->getRoute()]);
-                $loaderDefinition->addMethodCall('addRoute', $action->getRoute());
+                $routeLoaderDefinition->addMethodCall('addRoute', $action->getRoute());
+
+                if ($action->isSecure()) {
+                    $securityDefinition->addMethodCall('setRouteSecurity', [$action->getRoute()['name'], $action->getSecurity()]);
+                }
             }
         }
     }

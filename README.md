@@ -9,7 +9,7 @@ Here is an exemple of configuration for this bundle:
 ```
 elao_admin:
     # Actions used in all administrations when the actions key is not overwritten
-    default_actions: ['index', 'read', 'create', 'update', 'delete']
+    default_actions: ['list', 'read', 'create', 'update', 'delete']
     administrations:
         article:
             # The FQCN of the model handled by this administration
@@ -19,21 +19,25 @@ elao_admin:
             # Actions available for this administration
             actions:
                 # The alias of the service used as the Action
-                index:
+                list:
                     # The route definition of this action
                     route:
                         name: article_create
                         pattern: /article/create
-                    options:
+                    parameters:
                         # The template used to render the response
                         view: AdminBundle:Action:create.html.twig
+                        # Pagination configuration (can be disabled)
+                        pagination:
+                            per_page: 30
                 create:
                     # Parameters here are dependent of the Action
-                    form: form_name
-                    view: ~
-                    route: ~
+                    security:   is_granted('ROLE_CREATE_ARTICLE')
+                    parameters:
+                        form_type: aticle_creation
                 delete:
-                    redirect_route: article_index
+                    parameters:
+                        redirection: article_index
         articleLolilol:
             model: Article
             manager: ArticleLolilolManager

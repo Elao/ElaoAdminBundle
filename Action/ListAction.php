@@ -71,11 +71,10 @@ class ListAction extends Action
             $filterForm->handleRequest($request);
         }
 
-        $filters    = $this->getFilters($filterForm);
-        $target     = $this->modelManager->getTarget($filters);
-        $pagination = $this->paginate($request, $target);
+        $filters = $this->getFilters($filterForm);
+        $models  = $this->getModels($request, $filters);
 
-        return $this->createResponse($this->getViewParameters($request, $pagination, $filterForm));
+        return $this->createResponse($this->getViewParameters($request, $models, $filterForm));
     }
 
     /**
@@ -147,6 +146,23 @@ class ListAction extends Action
     }
 
     /**
+     * Get models
+     *
+     * @param Request $request
+     * @param array $filters
+     *
+     * @return PaginationInterface|array
+     */
+    public function getModels(Request $request, array $filters = [])
+    {
+        if (!$this->parameters['pagination']['enabled']) {
+            return $this->modelManager->findAll($filters);
+        }
+
+        return $this->paginate($request, $this->modelManager->getTarget($filters));
+    }
+
+    /**
      * Paginate the query/list of item
      *
      * @param Request $request
@@ -169,6 +185,7 @@ class ListAction extends Action
      *
      * @return Response
      */
+
     protected function createResponse(array $parameters = [])
     {
         return new Response(
@@ -180,14 +197,20 @@ class ListAction extends Action
      * Get view parameters
      *
      * @param Request $request
-     * @param PaginationInterface $pagination
+     * @param array|PaginationInterface $models
      * @param Form $filterForm
      *
      * @return array
      */
-    protected function getViewParameters(Request $request, PaginationInterface $pagination, Form $filterForm = null)
+    protected function getViewParameters(Request $request, $models, Form $filterForm = null)
     {
-        $parameters = ['pagination' => $pagination];
+        $parameters = [];
+
+        if ($models instanceof PaginationInterface) {
+            $parameters = ['pagination' => $models];
+        } else {
+            $parameters = ['models' => $models];
+        }
 
         if ($filterForm) {
             $parameters['filters'] = $filterForm->createView();

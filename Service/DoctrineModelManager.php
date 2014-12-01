@@ -63,9 +63,16 @@ class DoctrineModelManager implements ModelManagerInterface
         $queryBuilder = $this->getRepository()->createQueryBuilder($alias);
 
         foreach ($parameters as $attribute => $value) {
-            $queryBuilder
-                ->andWhere(sprintf('%s.%s = :%s', $queryBuilder->getRootAlias(), $attribute, $attribute))
-                ->setParameter($attribute, $value);
+            $property = sprintf('%s.%s', $queryBuilder->getRootAlias(), $attribute);
+
+            if ($value !== null) {
+                $queryBuilder
+                    ->andWhere($queryBuilder->expr()->eq($property, $attribute))
+                    ->setParameter($attribute, $value);
+            } else {
+                $queryBuilder
+                    ->andWhere($queryBuilder->expr()->isNull($property));
+            }
         }
 
         return $queryBuilder;

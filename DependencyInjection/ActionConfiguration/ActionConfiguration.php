@@ -65,7 +65,7 @@ abstract class ActionConfiguration implements ConfigurationInterface
     {
         $treeBuilder       = new TreeBuilder;
         $parametersBuilder = new TreeBuilder;
-        $rootNode          = $treeBuilder->root('action');
+        $rootNode          = $treeBuilder->root('options');
 
         $rootNode
             ->children()
@@ -94,6 +94,10 @@ abstract class ActionConfiguration implements ConfigurationInterface
                             ->prototype('variable')->end()
                         ->end()
                     ->end()
+                ->end()
+                ->scalarNode('security')
+                    ->info('Add a security expression to secure the action. See accepted format: http://symfony.com/doc/master/bundles/SensioFrameworkExtraBundle/annotations/security.html')
+                    ->example("has_role('ROLE_ADMIN')")
                 ->end()
                 ->append(
                     $this->configureParametersNode($parametersBuilder->root('parameters'))
