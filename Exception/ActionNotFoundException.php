@@ -23,7 +23,7 @@ class ActionNotFoundException extends Exception
      *
      * @var string
      */
-    private $messageFormat = 'Unkown action "%s", availables actions are: %s.';
+    const MESSAGE_FORMAT = 'Unkown action "%s", availables actions are: %s.';
 
     /**
      * Create an ActionNotFoundException
@@ -35,7 +35,7 @@ class ActionNotFoundException extends Exception
      */
     public static function create($action, array $actions, $code = 0, Exception $previous = null)
     {
-        $message = sprintf($this->messageFormat, $action, implode(', ', $actions));
+        $message = sprintf(static::MESSAGE_FORMAT, $action, implode(', ', $actions));
 
         return new ActionNotFoundException($message, $code, $previous);
     }
