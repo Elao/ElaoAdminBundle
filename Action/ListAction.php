@@ -173,7 +173,7 @@ class ListAction extends Action
     protected function paginate(Request $request, $target)
     {
         $page    = $request->query->get('page', 1);
-        $perPage = $this->parameters['per_page'];
+        $perPage = $this->parameters['pagination']['per_page'];
 
         return $this->paginator->paginate($target, $page, $perPage);
     }
