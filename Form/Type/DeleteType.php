@@ -33,6 +33,6 @@ class DeleteType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(['validation_groups' => false]);
+        $resolver->setDefaults(['validation_groups' => ['Delete']]);
     }
 }
