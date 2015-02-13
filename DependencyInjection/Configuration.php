@@ -29,6 +29,10 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->arrayNode('load_actions')
+                    ->prototype('scalar')->end()
+                    ->defaultValue(['default'])
+                ->end()
                 ->arrayNode('default_actions')
                     ->prototype('scalar')->end()
                 ->end()
