@@ -32,5 +32,8 @@
         <service id="elao_admin.notifier" class="%elao_admin.notifier.flash_message.class%">
             <argument type="service" id="session" />
         </service>
+
+        <!-- Abstract Action -->
+        <service id="elao_admin.action" abstract="true"></service>
     </services>
 </container>

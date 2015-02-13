@@ -22,9 +22,6 @@
     </parameters>
 
     <services>
-        <!-- Abstract Action -->
-        <service id="elao_admin.action" abstract="true"></service>
-
         <!-- List action -->
         <service id="elao_admin.action.list" class="%elao_admin.action.list.class%" parent="elao_admin.action" abstract="true">
             <tag name="elao_admin.action" alias="list" configuration="%elao_admin.action_configuration.list.class%" />
