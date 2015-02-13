@@ -9,14 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration;
+namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\HTML;
 
 use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
+use Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\ActionConfiguration;
 
 /**
- * Handle specific configuration for the create action
+ * Handle specific configuration for the update action
  */
-class CreateActionConfiguration extends ActionConfiguration
+class UpdateActionConfiguration extends ActionConfiguration
 {
     /**
      * {@inheritdoc}
@@ -52,7 +53,7 @@ class CreateActionConfiguration extends ActionConfiguration
      */
     protected function getRoutePattern()
     {
-        return sprintf('/%s/%s', $this->action->getAdministration()->getNameUrl(), $this->action->getAlias());
+        return sprintf('/%s/{id}/%s', $this->action->getAdministration()->getNameUrl(), $this->action->getAlias());
     }
 
     /**

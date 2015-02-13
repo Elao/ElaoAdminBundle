@@ -9,14 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration;
+namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\HTML;
 
 use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
+use Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\ActionConfiguration;
 
 /**
- * Handle specific configuration for the update action
+ * Handle specific configuration for the delete action
  */
-class UpdateActionConfiguration extends ActionConfiguration
+class DeleteActionConfiguration extends ActionConfiguration
 {
     /**
      * {@inheritdoc}
@@ -30,7 +31,7 @@ class UpdateActionConfiguration extends ActionConfiguration
             ->end()
             ->scalarNode('form_type')
                 ->cannotBeEmpty()
-                ->defaultValue($this->getFormType())
+                ->defaultValue('Elao\Bundle\AdminBundle\Form\Type\DeleteType')
             ->end()
             ->scalarNode('redirection')
                 ->cannotBeEmpty()
@@ -76,20 +77,12 @@ class UpdateActionConfiguration extends ActionConfiguration
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function getFormType()
-    {
-        return $this->action->getAdministration()->getNameLowerCase();
-    }
-
-    /**
      * Get redirection
      *
      * @return string
      */
     protected function getRedirection()
     {
-        return 'update';
+        return 'list';
     }
 }

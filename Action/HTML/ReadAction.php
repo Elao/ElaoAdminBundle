@@ -9,14 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Elao\Bundle\AdminBundle\Action;
+namespace Elao\Bundle\AdminBundle\Action\HTML;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Knp\Component\Pager\Paginator;
-use Knp\Component\Pager\Pagination\PaginationInterface;
+use Elao\Bundle\AdminBundle\Action\Action;
 
 /**
  * The default action for read pages

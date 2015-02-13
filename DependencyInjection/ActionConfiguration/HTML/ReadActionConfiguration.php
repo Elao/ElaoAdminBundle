@@ -9,9 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration;
+namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\HTML;
 
 use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
+use Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\ActionConfiguration;
 
 /**
  * Handle specific configuration for the read action

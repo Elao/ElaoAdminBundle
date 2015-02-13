@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <!-- Action classes -->
+        <parameter key="elao_admin.action.rest.read.class">Elao\Bundle\AdminBundle\Action\REST\ReadAction</parameter>
+        <parameter key="elao_admin.action.rest.list.class">Elao\Bundle\AdminBundle\Action\REST\ListAction</parameter>
+
+        <!-- Action configuration classes -->
+        <parameter key="elao_admin.action_configuration.read.class">Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\REST\ReadActionConfiguration</parameter>
+        <parameter key="elao_admin.action_configuration.list.class">Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\REST\ListActionConfiguration</parameter>
+    </parameters>
+
+    <services>
+        <!-- Read action -->
+        <service id="elao_admin.action.rest.read" class="%elao_admin.action.rest.read.class%" parent="elao_admin.action" abstract="true">
+            <tag name="elao_admin.action" alias="read" configuration="%elao_admin.action_configuration.read.class%"/>
+        </service>
+
+        <!-- List action -->
+        <service id="elao_admin.action.rest.list" class="%elao_admin.action.rest.list.class%" parent="elao_admin.action" abstract="true">
+            <tag name="elao_admin.action" alias="list" configuration="%elao_admin.action_configuration.list.class%"/>
+        </service>
+    </services>
+</container>

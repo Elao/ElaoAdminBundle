@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Elao\Bundle\AdminBundle\Action;
+namespace Elao\Bundle\AdminBundle\Action\HTML;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Form\Form;
@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
+use Elao\Bundle\AdminBundle\Action\Action;
 use Elao\Bundle\AdminBundle\Behaviour\NotifierInterface;
 
 /**

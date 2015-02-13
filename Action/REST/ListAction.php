@@ -9,29 +9,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Elao\Bundle\AdminBundle\Action;
+namespace Elao\Bundle\AdminBundle\Action\REST;
 
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Elao\Bundle\AdminBundle\Behaviour\FilterSetInterface;
 use Knp\Component\Pager\Paginator;
 use Knp\Component\Pager\Pagination\PaginationInterface;
+use Elao\Bundle\AdminBundle\Behaviour\FilterSetInterface;
 
 /**
  * The default action for list pages
  */
 class ListAction extends Action
 {
-    /**
-     * Template engine
-     *
-     * @var EngineInterface $templating
-     */
-    protected $templating;
-
     /**
      * Form factory
      *
@@ -49,13 +41,11 @@ class ListAction extends Action
     /**
      * Inject dependencies
      *
-     * @param EngineInterface $templating
      * @param FormFactoryInterface $formFactory
      * @param Paginator $paginator
      */
-    public function __construct(EngineInterface $templating, FormFactoryInterface $formFactory, Paginator $paginator)
+    public function __construct(FormFactoryInterface $formFactory, Paginator $paginator)
     {
-        $this->templating  = $templating;
         $this->formFactory = $formFactory;
         $this->paginator   = $paginator;
     }
@@ -65,16 +55,19 @@ class ListAction extends Action
      */
     public function getResponse(Request $request)
     {
-        $filterForm = $this->createFilterForm();
+        //var_dump($request);
+        die("lol");
 
-        if ($filterForm) {
+        if ($filterForm = $this->createFilterForm()) {
             $filterForm->handleRequest($request);
         }
 
         $filters = $this->getFilters($filterForm);
         $models  = $this->getModels($request, $filters);
 
-        return $this->createResponse($this->getViewParameters($request, $models, $filterForm));
+        //var_dump($models);
+
+        return $this->createResponse($this->getViewParameters($request, $models));
     }
 
     /**
@@ -91,10 +84,7 @@ class ListAction extends Action
         $formType = $this->getFormType($this->parameters['filters']['form_type']);
         $data     = $this->getFormData($this->parameters['filters']['data']);
 
-        return $this->formFactory
-            ->create($formType, $data)
-            ->add('reset', 'reset')
-            ->add('submit', 'submit');
+        return $this->formFactory->create($formType, $data);
     }
 
     /**
@@ -179,44 +169,16 @@ class ListAction extends Action
     }
 
     /**
-     * Create response
-     *
-     * @param array $parameters
-     *
-     * @return Response
-     */
-
-    protected function createResponse(array $parameters = [])
-    {
-        return new Response(
-            $this->templating->render($this->parameters['view'], $parameters)
-        );
-    }
-
-    /**
      * Get view parameters
      *
      * @param Request $request
      * @param array|PaginationInterface $models
-     * @param Form $filterForm
      *
      * @return array
      */
-    protected function getViewParameters(Request $request, $models, Form $filterForm = null)
+    protected function getViewParameters(Request $request, $models)
     {
-        $parameters = [];
-
-        if ($models instanceof PaginationInterface) {
-            $parameters = ['pagination' => $models];
-        } else {
-            $parameters = ['models' => $models];
-        }
-
-        if ($filterForm) {
-            $parameters['filters'] = $filterForm->createView();
-        }
-
-        return $parameters;
+        return ['models' => $models];
     }
 
     /**

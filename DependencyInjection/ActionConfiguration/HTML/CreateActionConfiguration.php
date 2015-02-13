@@ -9,14 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration;
+namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\HTML;
 
 use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
+use Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\ActionConfiguration;
 
 /**
- * Handle specific configuration for the delete action
+ * Handle specific configuration for the create action
  */
-class DeleteActionConfiguration extends ActionConfiguration
+class CreateActionConfiguration extends ActionConfiguration
 {
     /**
      * {@inheritdoc}
@@ -30,7 +31,7 @@ class DeleteActionConfiguration extends ActionConfiguration
             ->end()
             ->scalarNode('form_type')
                 ->cannotBeEmpty()
-                ->defaultValue('Elao\Bundle\AdminBundle\Form\Type\DeleteType')
+                ->defaultValue($this->getFormType())
             ->end()
             ->scalarNode('redirection')
                 ->cannotBeEmpty()
@@ -52,7 +53,7 @@ class DeleteActionConfiguration extends ActionConfiguration
      */
     protected function getRoutePattern()
     {
-        return sprintf('/%s/{id}/%s', $this->action->getAdministration()->getNameUrl(), $this->action->getAlias());
+        return sprintf('/%s/%s', $this->action->getAdministration()->getNameUrl(), $this->action->getAlias());
     }
 
     /**
@@ -76,12 +77,20 @@ class DeleteActionConfiguration extends ActionConfiguration
     }
 
     /**
+     * {@inheritdoc}
+     */
+    protected function getFormType()
+    {
+        return $this->action->getAdministration()->getNameLowerCase();
+    }
+
+    /**
      * Get redirection
      *
      * @return string
      */
     protected function getRedirection()
     {
-        return 'list';
+        return 'update';
     }
 }

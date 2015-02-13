@@ -9,21 +9,27 @@
  * file that was distributed with this source code.
  */
 
-namespace Elao\Bundle\AdminBundle\Action;
+namespace Elao\Bundle\AdminBundle\Action\HTML;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * The default action for create pages
+ * The default action for update pages
  */
-class CreateAction extends FormAction
+class UpdateAction extends FormAction
 {
     /**
      * {@inheritdoc}
      */
     protected function getModel(Request $request)
     {
-        return $this->modelManager->create();
+        $model = $this->modelManager->find(['id' => $request->get('id')]);
+
+        if (!$model) {
+            throw new NotFoundHttpException;
+        }
+
+        return $model;
     }
 }

@@ -9,9 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration;
+namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\HTML;
 
 use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
+use Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\ActionConfiguration;
 
 /**
  * Handle specific configuration for the list action
@@ -29,7 +30,7 @@ class ListActionConfiguration extends ActionConfiguration
                 ->cannotBeEmpty()
             ->end()
             ->arrayNode('pagination')
-                ->canBeDisabled()
+                ->canBeEnabled()
                 ->children()
                     ->scalarNode('per_page')
                         ->defaultValue(10)
@@ -38,7 +39,7 @@ class ListActionConfiguration extends ActionConfiguration
                 ->end()
             ->end()
             ->arrayNode('filters')
-                ->canBeDisabled()
+                ->canBeEnabled()
                 ->children()
                     ->scalarNode('form_type')
                         ->cannotBeEmpty()
