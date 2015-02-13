@@ -37,12 +37,8 @@ class ElaoAdminExtension extends Extension
 
         $loader->load('services.xml');
         $loader->load('events.xml');
+        $loader->load('actions/default.xml');
 
-        foreach ($config['load_actions'] as $package) {
-            $loader->load(sprintf('actions/%s.xml', $package));
-        }
-
-        $container->setParameter('elao_admin.parameters.default_actions', $config['default_actions']);
         $container->setParameter('elao_admin.parameters.administrations', $config['administrations']);
     }
 }

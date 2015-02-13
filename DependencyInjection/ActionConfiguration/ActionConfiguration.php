@@ -147,7 +147,7 @@ abstract class ActionConfiguration implements ConfigurationInterface
     /**
      * Get default controller for route dynamically
      *
-     * @return [type]
+     * @return string
      */
     abstract protected function getRouteController();
 }

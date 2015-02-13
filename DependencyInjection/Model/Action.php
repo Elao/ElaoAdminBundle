@@ -19,6 +19,13 @@ use Symfony\Component\Config\Definition\Processor;
 class Action
 {
     /**
+     * Alias
+     *
+     * @var string
+     */
+    protected $alias;
+
+    /**
      * Type of action (parent service)
      *
      * @var ActionType
@@ -35,17 +42,19 @@ class Action
     /**
      * Constructor
      *
-     * @param Administration $administration
      * @param string $alias
+     * @param ActionType $type
+     * @param Administration $administration
      * @param array $options
      */
-    public function __construct(ActionType $type, Administration $administration, array $options)
+    public function __construct($alias, ActionType $type, Administration $administration, array $options)
     {
+        $this->alias          = $alias;
         $this->type           = $type;
         $this->administration = $administration;
         $this->options        = (new Processor)->processConfiguration(
             $this->type->getConfiguration($this),
-            $options
+            ['options' => $options]
         );
 
         $this->options['parameters'] = array_merge(
@@ -78,7 +87,7 @@ class Action
      */
     public function getAlias()
     {
-        return $this->type->getAlias();
+        return $this->alias;
     }
 
     /**

@@ -35,28 +35,12 @@ class Administration
      *
      * @param string $name
      * @param array $options
-     * @param array $actionTypes
      */
-    public function __construct($name, array $options, array $actionTypes)
+    public function __construct($name, array $options)
     {
         $this->name    = $name;
         $this->options = $options;
         $this->actions = [];
-
-        foreach ($this->options['actions'] as $alias => $actionOptions) {
-
-            if (!array_key_exists($alias, $actionTypes)) {
-                throw new \Exception(sprintf(
-                    'Unkown action "%s", availables actions are: %s',
-                    $alias,
-                    join(', ', array_keys($actionTypes))
-                ));
-            }
-
-            $this->actions[$alias] = new Action($actionTypes[$alias], $this, $actionOptions);
-        }
-
-        unset($this->options['actions']);
     }
 
     /**
@@ -117,6 +101,16 @@ class Administration
     public function getRouteResolverId()
     {
         return sprintf('route_resolver.%s', $this->name);
+    }
+
+    /**
+     * Add action
+     *
+     * @param Action $action
+     */
+    public function addAction(Action $action)
+    {
+        $this->actions[$action->getAlias()] = $action;
     }
 
     /**

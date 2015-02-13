@@ -27,38 +27,44 @@ use Elao\Bundle\AdminBundle\DependencyInjection\Model\ActionType;
 class AdministrationCompilerPass implements CompilerPassInterface
 {
     /**
+     * Container
+     *
+     * @var ContainerBuilder
+     */
+    private $container;
+
+    /**
+     * Action types
+     *
+     * @var ContainerBuilder
+     */
+    private $actionTypes;
+
+    /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        $defaultActions        = $container->getParameter('elao_admin.parameters.default_actions');
+        $this->container = $container;
+
         $administrations       = $container->getParameter('elao_admin.parameters.administrations');
         $routeLoaderDefinition = $container->getDefinition('elao_admin.routing_loader');
         $securityDefinition    = $container->getDefinition('elao_admin.event.subscriber.security');
-        $actionTypes           = $this->getActionTypes($container);
 
-        foreach ($administrations as $name => $options) {
-
-            if (!isset($options['actions']) || empty($options['actions'])) {
-                $options['actions'] = array_combine($defaultActions, array_fill(0, count($defaultActions), []));
-            }
-
-            $administration = new Administration($name, $options, $actionTypes);
-
-            $container->setDefinition(
-                $administration->getModelManagerId(),
-                $this->getModelManagerDefinition($administration)
-            );
-
+        foreach ($administrations as $name => $config) {
+            $administration          = new Administration($name, $config['options']);
             $routeResolverDefinition = $this->getRouteResolverDefinition($administration);
-
+            $modelManagerDefinition  = $this->getModelManagerDefinition($administration);
+            $container->setDefinition($administration->getModelManagerId(), $modelManagerDefinition);
             $container->setDefinition($administration->getRouteResolverId(), $routeResolverDefinition);
 
-            $actions = $administration->getActions();
+            foreach ($config['actions'] as $alias => $actionConfig) {
+                $type   = $this->getActionType($actionConfig['type'] ?: $alias);
+                $action = new Action($alias, $type, $administration, $actionConfig['options']);
 
-            foreach ($actions as $alias => $action) {
+                $administration->addAction($action);
                 $container->setDefinition($action->getServiceId(), $this->getActionDefinition($action));
-                $routeResolverDefinition->addMethodCall('addAction', [$alias, $action->getRoute()]);
+                $routeResolverDefinition->addMethodCall('addAction', [$action->getAlias(), $action->getRoute()]);
                 $routeLoaderDefinition->addMethodCall('addRoute', $action->getRoute());
 
                 if ($action->isSecure()) {
@@ -75,7 +81,7 @@ class AdministrationCompilerPass implements CompilerPassInterface
      *
      * @return DefinitionDecorator
      */
-    protected function getModelManagerDefinition(Administration $administration)
+    private function getModelManagerDefinition(Administration $administration)
     {
         $definition = new DefinitionDecorator($administration->getModelManager());
 
@@ -91,7 +97,7 @@ class AdministrationCompilerPass implements CompilerPassInterface
      *
      * @return DefinitionDecorator
      */
-    protected function getRouteResolverDefinition(Administration $administration)
+    private function getRouteResolverDefinition(Administration $administration)
     {
         $definition = new DefinitionDecorator($administration->getRouteResolver());
 
@@ -105,7 +111,7 @@ class AdministrationCompilerPass implements CompilerPassInterface
      *
      * @return DefinitionDecorator
      */
-    protected function getActionDefinition(Action $action)
+    private function getActionDefinition(Action $action)
     {
         $administration = $action->getAdministration();
         $definition     = new DefinitionDecorator($action->getParentServiceId());
@@ -118,47 +124,68 @@ class AdministrationCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * Load action types
+     * Get action type
      *
-     * @param ContainerBuilder $container
+     * @param string $type
+     *
+     * @return ActionType
+     */
+    private function getActionType($type)
+    {
+        $actionTypes = $this->getActionTypes();
+
+        if (!array_key_exists($type, $actionTypes)) {
+            throw new \Exception(sprintf(
+                'Unkown action "%s", availables actions are: %s',
+                $alias,
+                join(', ', array_keys($actionTypes))
+            ));
+        }
+
+        return $actionTypes[$type];
+    }
+
+    /**
+     * Load action types
      *
      * @return array
      */
-    protected function getActionTypes(ContainerBuilder $container)
+    private function getActionTypes()
     {
-        $services = $container->findTaggedServiceIds('elao_admin.action');
-        $actions  = [];
+        if (!isset($this->actionTypes)) {
+            $this->actionTypes = [];
+            $services = $this->container->findTaggedServiceIds('elao_admin.action');
 
-        foreach ($services as $id => $tags) {
-            foreach ($tags as $attributes) {
-                $alias = $attributes['alias'];
+            foreach ($services as $id => $tags) {
+                foreach ($tags as $attributes) {
+                    $alias = $attributes['alias'];
 
-                if (preg_match('#^%.+%$#i', $attributes['configuration'])) {
-                    if (!$container->hasParameter(trim($attributes['configuration'], '%'))) {
-                        throw new InvalidConfigurationException(sprintf(
-                            'Invalid configuration "%s" for service action "%s" : this parameter does not exist.',
-                            $attributes['configuration'],
-                            $alias
-                        ));
+                    if (preg_match('#^%.+%$#i', $attributes['configuration'])) {
+                        if (!$this->container->hasParameter(trim($attributes['configuration'], '%'))) {
+                            throw new InvalidConfigurationException(sprintf(
+                                'Invalid configuration "%s" for service action "%s" : this parameter does not exist.',
+                                $attributes['configuration'],
+                                $alias
+                            ));
+                        }
+                        $configuration = $this->container->getParameter(trim($attributes['configuration'], '%'));
+                    } else {
+                        if (!class_exists($attributes['configuration'])) {
+                            throw new InvalidConfigurationException(sprintf(
+                                'Invalid configuration "%s" for service action "%s" : this class does not exist.',
+                                $attributes['configuration'],
+                                $alias
+                            ));
 
+                        }
+                        $configuration = $attributes['configuration'];
                     }
-                    $configuration = $container->getParameter(trim($attributes['configuration'], '%'));
-                } else {
-                    if (!class_exists($attributes['configuration'])) {
-                        throw new InvalidConfigurationException(sprintf(
-                            'Invalid configuration "%s" for service action "%s" : this class does not exist.',
-                            $attributes['configuration'],
-                            $alias
-                        ));
 
-                    }
-                    $configuration = $attributes['configuration'];
+                    $this->actionTypes[$alias] = new ActionType($id, $alias, $configuration);
                 }
-
-                $actions[$alias] = new ActionType($id, $alias, $configuration);
             }
         }
 
-        return $actions;
+        return $this->actionTypes;
     }
 }
