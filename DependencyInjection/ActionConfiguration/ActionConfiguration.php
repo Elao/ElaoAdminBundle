@@ -93,6 +93,14 @@ abstract class ActionConfiguration implements ConfigurationInterface
                         ->arrayNode('requirements')
                             ->prototype('variable')->end()
                         ->end()
+                        ->arrayNode('methods')
+                            ->validate()
+                            ->ifNotInArray(['GET', 'PUT', 'POST', 'DELETE'])
+                                ->thenInvalid('Invalid http method "%s"')
+                            ->end()
+                            ->prototype('scalar')->end()
+                            ->defaultValue($this->getRouteMethods())
+                        ->end()
                     ->end()
                 ->end()
                 ->scalarNode('security')
@@ -150,4 +158,14 @@ abstract class ActionConfiguration implements ConfigurationInterface
      * @return string
      */
     abstract protected function getRouteController();
+
+    /**
+     * Get default methods for route dynamically
+     *
+     * @return array
+     */
+    protected function getRouteMethods()
+    {
+        return [];
+    }
 }

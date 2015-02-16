@@ -55,19 +55,15 @@ class ListAction extends Action
      */
     public function getResponse(Request $request)
     {
-        //var_dump($request);
-        die("lol");
-
         if ($filterForm = $this->createFilterForm()) {
             $filterForm->handleRequest($request);
         }
 
+        $format  = $this->getFormat($request);
         $filters = $this->getFilters($filterForm);
         $models  = $this->getModels($request, $filters);
 
-        //var_dump($models);
-
-        return $this->createResponse($this->getViewParameters($request, $models));
+        return $this->createResponse($this->getViewParameters($request, $models), 200, $format);
     }
 
     /**

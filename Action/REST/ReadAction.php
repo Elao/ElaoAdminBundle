@@ -18,16 +18,17 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * The default action for read pages
  */
-class ReadAction extends Action
+class ReadAction extends ActionConfiguration
 {
     /**
      * {@inheritdoc}
      */
     public function getResponse(Request $request)
     {
-        $model = $this->getModel($request);
+        $format = $this->getFormat($request);
+        $model  = $this->getModel($request);
 
-        return $this->createResponse($this->getViewParameters($model));
+        return $this->createResponse($this->getViewParameters($model), 200, $format);
     }
 
     /**

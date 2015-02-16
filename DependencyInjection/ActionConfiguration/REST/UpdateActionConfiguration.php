@@ -15,9 +15,9 @@ use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
 use Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\ActionConfiguration;
 
 /**
- * Handle specific configuration for the read action
+ * Handle specific configuration for the update action
  */
-class ReadActionConfiguration extends ActionConfiguration
+class UpdateActionConfiguration extends ActionConfiguration
 {
     /**
      * {@inheritdoc}
@@ -48,6 +48,6 @@ class ReadActionConfiguration extends ActionConfiguration
      */
     protected function getRouteMethods()
     {
-        return ['GET'];
+        return ['PUT'];
     }
 }

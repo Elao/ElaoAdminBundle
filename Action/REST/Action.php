@@ -11,6 +11,9 @@
 
 namespace Elao\Bundle\AdminBundle\Action\REST;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use JMS\Serializer\Serializer;
 use Elao\Bundle\AdminBundle\Action\Action as BaseAction;
 
 /**
@@ -18,6 +21,56 @@ use Elao\Bundle\AdminBundle\Action\Action as BaseAction;
  */
 abstract class Action extends BaseAction
 {
+    const FORMAT_JSON = 'json';
+    const FORMAT_XML  = 'xml';
+
+    /**
+     * Serializer
+     *
+     * @var Serializer
+     */
+    protected $serializer;
+
+    /**
+     * @var array
+     */
+    protected static $formats;
+
+    /**
+     * Set serializer
+     *
+     * @param Serializer $serializer
+     */
+    public function setSerializer(Serializer $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
+    /**
+     * Get format from Request
+     *
+     * @param Request $request
+     *
+     * @return string
+     */
+    protected function getFormat(Request $request)
+    {
+        $supportedContentTypes  = $this->getSupportedContentTypes();
+        $acceptableContentTypes = $request->getAcceptableContentTypes();
+
+        foreach ($acceptableContentTypes as $contentType) {
+            if (isset($supportedContentTypes[$contentType])) {
+                return $supportedContentTypes[$contentType];
+            }
+        }
+
+        throw new \Exception(sprintf(
+            'No acceptable content type found "%s" in supported  content types "%s".',
+            implode(', ', $acceptableContentTypes),
+            implode(', ', $supportedContentTypes)
+        ));
+    }
+
     /**
      * Create response
      *
@@ -25,9 +78,74 @@ abstract class Action extends BaseAction
      *
      * @return Response
      */
-
-    protected function createResponse(array $data = [])
+    protected function createResponse(array $data = [], $status = 200, $format = 'json')
     {
-        return new JSONResponse(serialize($data));
+        $headers = ['Content-Type' => $this->getContentType($format)];
+
+        return new Response($this->serializer->serialize($data, $format), $status, $headers);
+    }
+
+    /**
+     * Get formats
+     *
+     * @return array
+     */
+    protected function getSupportedFormats()
+    {
+        if (null === static::$formats) {
+            static::initializeFormats();
+        }
+
+        return static::$formats;
+    }
+
+    /**
+     * Get supported content types
+     *
+     * @return array
+     */
+    protected function getSupportedContentTypes()
+    {
+        $supportedContentTypes = [];
+        $supportedFormats      = $this->getSupportedFormats();
+
+        foreach ($supportedFormats as $format => $contentTypes) {
+            foreach ($contentTypes as $contentType) {
+                if (!isset($supportedContentTypes[$contentType])) {
+                    $supportedContentTypes[$contentType] = $format;
+                }
+            }
+        }
+
+        return $supportedContentTypes;
+    }
+
+    /**
+     * Get content type for the given format
+     *
+     * @param string $format
+     *
+     * @return string
+     */
+    protected function getContentType($format)
+    {
+        $formats = $this->getSupportedFormats();
+
+        if (!isset($formats[$format])) {
+            throw new \Exception(sprintf('Unsopported format "%s".', $format));
+        }
+
+        return $formats[$format][0];
+    }
+
+    /**
+     * Initializes HTTP request formats.
+     */
+    protected static function initializeFormats()
+    {
+        static::$formats = array(
+            'json' => ['application/json', 'application/x-json', '*/*'],
+            'xml'  => ['text/xml', 'application/xml', 'application/x-xml', '*/*'],
+        );
     }
 }

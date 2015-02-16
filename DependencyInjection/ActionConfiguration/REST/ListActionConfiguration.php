@@ -26,7 +26,7 @@ class ListActionConfiguration extends ActionConfiguration
     {
         return $node
             ->arrayNode('pagination')
-                ->canBeDisabled()
+                ->canBeEnabled()
                 ->children()
                     ->scalarNode('per_page')
                         ->defaultValue(10)
@@ -35,7 +35,7 @@ class ListActionConfiguration extends ActionConfiguration
                 ->end()
             ->end()
             ->arrayNode('filters')
-                ->canBeDisabled()
+                ->canBeEnabled()
                 ->children()
                     ->scalarNode('form_type')
                         ->cannotBeEmpty()
@@ -81,5 +81,13 @@ class ListActionConfiguration extends ActionConfiguration
     protected function getFilterFormType()
     {
         return sprintf('%s_filter', $this->action->getAdministration()->getNameLowerCase());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getRouteMethods()
+    {
+        return ['GET'];
     }
 }

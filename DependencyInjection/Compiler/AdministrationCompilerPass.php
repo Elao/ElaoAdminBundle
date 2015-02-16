@@ -137,7 +137,7 @@ class AdministrationCompilerPass implements CompilerPassInterface
         if (!array_key_exists($type, $actionTypes)) {
             throw new \Exception(sprintf(
                 'Unkown action "%s", availables actions are: %s',
-                $alias,
+                $type,
                 join(', ', array_keys($actionTypes))
             ));
         }

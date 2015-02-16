@@ -15,10 +15,23 @@ use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
 use Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration\ActionConfiguration;
 
 /**
- * Handle specific configuration for the read action
+ * Handle specific configuration for the create action
  */
-class ReadActionConfiguration extends ActionConfiguration
+class CreateActionConfiguration extends ActionConfiguration
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function buildParametersTree(NodeParentInterface $node)
+    {
+        return $node
+            ->scalarNode('form_type')
+                ->cannotBeEmpty()
+                ->defaultValue($this->getFormType())
+            ->end()
+        ;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -32,7 +45,7 @@ class ReadActionConfiguration extends ActionConfiguration
      */
     protected function getRoutePattern()
     {
-        return sprintf('/%s/{id}', $this->action->getAdministration()->getNameUrl());
+        return sprintf('/%s', $this->action->getAdministration()->getNameUrl());
     }
 
     /**
@@ -46,8 +59,16 @@ class ReadActionConfiguration extends ActionConfiguration
     /**
      * {@inheritdoc}
      */
+    protected function getFormType()
+    {
+        return $this->action->getAdministration()->getNameLowerCase();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getRouteMethods()
     {
-        return ['GET'];
+        return ['POST'];
     }
 }

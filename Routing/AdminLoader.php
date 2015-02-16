@@ -55,20 +55,28 @@ class AdminLoader implements LoaderInterface
      * Add route
      *
      * @param string $name
-     * @param string $pattern
+     * @param string $path
      * @param array $controller
      */
-    public function addRoute($name, $pattern, $controller, $parameters = [], $requirements = [])
-    {
+    public function addRoute(
+        $name,
+        $path,
+        $controller,
+        array $parameters = [],
+        array $requirements = [],
+        array $methods = []
+    ) {
         $this->routes->add(
             $name,
             new Route(
-                $pattern,
-                array_merge(
-                    ['_controller' => $controller],
-                    $parameters
-                ),
-                $requirements
+                $path, // Path
+                array_merge(['_controller' => $controller], $parameters), // Defaults
+                $requirements, // Requirements
+                [], // Options
+                '', // Host
+                [], // Schemes
+                $methods, // Methods
+                '' // Condition
             )
         );
     }
