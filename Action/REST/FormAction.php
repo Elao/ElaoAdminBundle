@@ -65,12 +65,12 @@ abstract class FormAction extends Action
         if (!$form->isValid()) {
             $this->onFormInvalid($form);
 
-            return $this->createResponse($this->getErrorViewParameters($request, $form), $this->errorCode, $format);
+            return $this->createResponse($this->getErrorViewParameters($request, $form), static::$errorCode, $format);
         }
 
         $this->onFormValid($form);
 
-        return $this->createResponse($this->getSuccessViewParameters($request, $form), $this->successCode, $format);
+        return $this->createResponse($this->getSuccessViewParameters($request, $form), static::$successCode, $format);
     }
 
     /**
@@ -136,7 +136,7 @@ abstract class FormAction extends Action
      */
     protected function getErrorViewParameters(Request $request, Form $form)
     {
-        return ['errors' => $form->getErrors()];
+        return ['errors' => $form->getErrors(true)];
     }
 
     /**

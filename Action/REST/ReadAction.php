@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * The default action for read pages
  */
-class ReadAction extends ActionConfiguration
+class ReadAction extends Action
 {
     /**
      * {@inheritdoc}
@@ -28,7 +28,7 @@ class ReadAction extends ActionConfiguration
         $format = $this->getFormat($request);
         $model  = $this->getModel($request);
 
-        return $this->createResponse($this->getViewParameters($model), 200, $format);
+        return $this->createResponse($this->getViewParameters($request, $model), 200, $format);
     }
 
     /**

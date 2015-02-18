@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Elao\Bundle\AdminBundle\Action\HTML;
+namespace Elao\Bundle\AdminBundle\Action\REST;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Form\Form;
 
 /**
- * The default action for delete pages
+ * The delete action for update pages
  */
 class DeleteAction extends FormAction
 {

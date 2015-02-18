@@ -22,6 +22,19 @@ class UpdateActionConfiguration extends ActionConfiguration
     /**
      * {@inheritdoc}
      */
+    protected function buildParametersTree(NodeParentInterface $node)
+    {
+        return $node
+            ->scalarNode('form_type')
+                ->cannotBeEmpty()
+                ->defaultValue($this->getFormType())
+            ->end()
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getRouteName()
     {
         return sprintf('%s_%s', $this->action->getAdministration()->getNameLowerCase(), $this->action->getAlias());
@@ -41,6 +54,14 @@ class UpdateActionConfiguration extends ActionConfiguration
     protected function getRouteController()
     {
         return sprintf('%s:getResponse', $this->action->getServiceId());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getFormType()
+    {
+        return $this->action->getAdministration()->getNameLowerCase();
     }
 
     /**

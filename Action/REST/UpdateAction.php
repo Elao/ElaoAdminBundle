@@ -9,16 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Elao\Bundle\AdminBundle\Action\HTML;
+namespace Elao\Bundle\AdminBundle\Action\REST;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Form\Form;
 
 /**
- * The default action for delete pages
+ * The default action for update pages
  */
-class DeleteAction extends FormAction
+class UpdateAction extends FormAction
 {
     /**
      * {@inheritdoc}
@@ -32,15 +31,5 @@ class DeleteAction extends FormAction
         }
 
         return $model;
-    }
-
-    /**
-     * Persist model from form
-     *
-     * @param Form $form
-     */
-    protected function onFormValid(Form $form)
-    {
-        $this->modelManager->delete($form->getData());
     }
 }
