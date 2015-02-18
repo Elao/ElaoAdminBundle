@@ -74,15 +74,21 @@ abstract class Action extends BaseAction
     /**
      * Create response
      *
-     * @param array $parameters
+     * @param array $data
+     * @param integer $status
+     * @param string $format
      *
      * @return Response
      */
-    protected function createResponse(array $data = [], $status = 200, $format = 'json')
+    protected function createResponse($data = '', $status = 200, $format = 'json')
     {
         $headers = ['Content-Type' => $this->getContentType($format)];
 
-        return new Response($this->serializer->serialize($data, $format), $status, $headers);
+        return new Response(
+            $data !== null ? $this->serializer->serialize($data, $format) : $data,
+            $status,
+            $headers
+        );
     }
 
     /**

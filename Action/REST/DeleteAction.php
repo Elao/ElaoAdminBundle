@@ -21,6 +21,11 @@ use Symfony\Component\Form\Form;
 class DeleteAction extends FormAction
 {
     /**
+     * Default success code
+     */
+    static public $successCode = 204;
+
+    /**
      * {@inheritdoc}
      */
     protected function getModel(Request $request)
@@ -35,9 +40,15 @@ class DeleteAction extends FormAction
     }
 
     /**
-     * Persist model from form
-     *
-     * @param Form $form
+     * {@inheritdoc}
+     */
+    protected function getSuccessViewParameters(Request $request, Form $form)
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     protected function onFormValid(Form $form)
     {

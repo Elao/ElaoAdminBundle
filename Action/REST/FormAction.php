@@ -119,7 +119,7 @@ abstract class FormAction extends Action
      * @param Request $request
      * @param mixed $model
      *
-     * @return array
+     * @return mixed
      */
     protected function getSuccessViewParameters(Request $request, Form $form)
     {
@@ -132,7 +132,7 @@ abstract class FormAction extends Action
      * @param Request $request
      * @param mixed $model
      *
-     * @return array
+     * @return mixed
      */
     protected function getErrorViewParameters(Request $request, Form $form)
     {
