@@ -92,7 +92,6 @@ class DoctrineModelManager implements ModelManagerInterface
     public function persist($model)
     {
         $this->objectManager->persist($model);
-
         $this->flush();
 
         return $this;
@@ -103,8 +102,7 @@ class DoctrineModelManager implements ModelManagerInterface
      */
     public function delete($model)
     {
-        $this->objectManager->delete($model);
-
+        $this->objectManager->remove($model);
         $this->flush();
 
         return $this;
