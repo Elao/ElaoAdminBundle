@@ -22,6 +22,19 @@ class DeleteActionConfiguration extends ActionConfiguration
     /**
      * {@inheritdoc}
      */
+    protected function buildParametersTree(NodeParentInterface $node)
+    {
+        return $node
+            ->scalarNode('form_type')
+                ->cannotBeEmpty()
+                ->defaultValue('Elao\Bundle\AdminBundle\Form\Type\DeleteType')
+            ->end()
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getRouteName()
     {
         return sprintf('%s_%s', $this->action->getAdministration()->getNameLowerCase(), $this->action->getAlias());
