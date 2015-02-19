@@ -53,6 +53,18 @@ elao_admin:
                 delete: ~
 ```
 
+This config will generate the following routes:
+
+```
+[router] Current routes
+Name                     Method Scheme Host Path
+article                    GET|POST ANY    ANY  /article
+article_create             GET|POST ANY    ANY  /article/create
+article_read               GET      ANY    ANY  /article/{id}
+article_update             GET|POST ANY    ANY  /article/{id}/update
+article_delete             GET|POST ANY    ANY  /article/{id}/delete
+```
+
 ## How it works
 
 Generating administrations is not about magic. It's about registering available
