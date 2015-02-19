@@ -59,6 +59,14 @@ class ReadActionConfiguration extends ActionConfiguration
     /**
      * {@inheritdoc}
      */
+    protected function getRouteMethods()
+    {
+        return ['GET'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getView()
     {
         return sprintf(

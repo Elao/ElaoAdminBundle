@@ -80,6 +80,14 @@ class ListActionConfiguration extends ActionConfiguration
     /**
      * {@inheritdoc}
      */
+    protected function getRouteMethods()
+    {
+        return ['GET', 'POST'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getView()
     {
         return sprintf(
