@@ -72,6 +72,8 @@ class AdministrationCompilerPass implements CompilerPassInterface
                     $action->getRoute()['parameters'],
                     $action->getRoute()['requirements'],
                     $action->getRoute()['methods'],
+                    $action->getRoute()['host'],
+                    $action->getRoute()['schemes'],
                 ]);
 
                 if ($action->isSecure()) {

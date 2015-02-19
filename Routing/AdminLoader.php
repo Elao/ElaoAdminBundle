@@ -64,7 +64,9 @@ class AdminLoader implements LoaderInterface
         $controller,
         array $parameters = [],
         array $requirements = [],
-        array $methods = []
+        array $methods = [],
+        $host = '',
+        $schemes = []
     ) {
         $this->routes->add(
             $name,
@@ -73,8 +75,8 @@ class AdminLoader implements LoaderInterface
                 array_merge(['_controller' => $controller], $parameters), // Defaults
                 $requirements, // Requirements
                 [], // Options
-                '', // Host
-                [], // Schemes
+                $host, // Host
+                $schemes, // Schemes
                 $methods, // Methods
                 '' // Condition
             )
