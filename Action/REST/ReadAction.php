@@ -53,7 +53,7 @@ class ReadAction extends Action
      */
     protected function getModel(Request $request)
     {
-        $model = $this->modelManager->find(['id' => $request->get('id')]);
+        $model = $this->modelManager->find($request->get('_route_params'));
 
         if (!$model) {
             throw new NotFoundHttpException;

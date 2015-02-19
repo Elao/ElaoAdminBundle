@@ -85,9 +85,11 @@ abstract class ActionConfiguration implements ConfigurationInterface
                             ->defaultValue($this->getRouteController())
                         ->end()
                         ->arrayNode('parameters')
+                            ->defaultValue($this->getRouteParameters())
                             ->prototype('variable')->end()
                         ->end()
                         ->arrayNode('requirements')
+                            ->defaultValue($this->getRouteRequirements())
                             ->prototype('variable')->end()
                         ->end()
                         ->arrayNode('methods')
@@ -155,6 +157,26 @@ abstract class ActionConfiguration implements ConfigurationInterface
      * @return string
      */
     abstract protected function getRouteController();
+
+    /**
+     * Get default parameters for route dynamically
+     *
+     * @return array
+     */
+    protected function getRouteParameters()
+    {
+        return [];
+    }
+
+    /**
+     * Get default requirements for route dynamically
+     *
+     * @return array
+     */
+    protected function getRouteRequirements()
+    {
+        return [];
+    }
 
     /**
      * Get default methods for route dynamically

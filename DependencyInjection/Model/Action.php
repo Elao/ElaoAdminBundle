@@ -52,6 +52,7 @@ class Action
         $this->alias          = $alias;
         $this->type           = $type;
         $this->administration = $administration;
+
         $this->options        = (new Processor)->processConfiguration(
             $this->type->getConfiguration($this),
             ['options' => $options]

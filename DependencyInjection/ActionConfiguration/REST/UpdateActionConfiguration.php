@@ -51,6 +51,14 @@ class UpdateActionConfiguration extends ActionConfiguration
     /**
      * {@inheritdoc}
      */
+    protected function getRouteRequirements()
+    {
+        return ['id' => '\d+'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getRouteController()
     {
         return sprintf('%s:getResponse', $this->action->getServiceId());

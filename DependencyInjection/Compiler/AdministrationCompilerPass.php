@@ -65,7 +65,14 @@ class AdministrationCompilerPass implements CompilerPassInterface
                 $administration->addAction($action);
                 $container->setDefinition($action->getServiceId(), $this->getActionDefinition($action));
                 $routeResolverDefinition->addMethodCall('addAction', [$action->getAlias(), $action->getRoute()]);
-                $routeLoaderDefinition->addMethodCall('addRoute', $action->getRoute());
+                $routeLoaderDefinition->addMethodCall('addRoute', [
+                    $action->getRoute()['name'],
+                    $action->getRoute()['pattern'],
+                    $action->getRoute()['controller'],
+                    $action->getRoute()['parameters'],
+                    $action->getRoute()['requirements'],
+                    $action->getRoute()['methods'],
+                ]);
 
                 if ($action->isSecure()) {
                     $securityDefinition->addMethodCall('setRouteSecurity', [$action->getRoute()['name'], $action->getSecurity()]);
