@@ -37,7 +37,6 @@ class ElaoAdminExtension extends Extension
 
         $loader->load('services.xml');
         $loader->load('events.xml');
-        $loader->load('actions/rest.xml');
 
         $container->setParameter('elao_admin.parameters.administrations', $config['administrations']);
     }
