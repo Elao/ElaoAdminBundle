@@ -1,53 +1,56 @@
 Elao Admin Bundle
 =================
 
+## Installation
 
-## Configuration reference
+Require the bundle in _Composer_:
 
-Here is an exemple of configuration for this bundle:
+```bash
+$ composer require elao/admin-bundle
+```
+
+Install the bundle in your _AppKernel_:
+
+```php
+<?php
+// app/AppKernel.php
+
+public function registerBundles()
+{
+    $bundles = array(
+        // ...
+        new Elao\Bundle\AdminBundle\ElaoAdminBundle(),
+    );
+}
+```
+
+Import the rounting in your `routing.yml` configuration file:
+
+```yml
+// app/config/routing.yml
+elao_admin_bundle:
+    resource: "@ElaoAdminBundle/Resources/config/routing.yml"
+    prefix:   / # You can prefix all actions here
 
 ```
+
+Configure some actions in your `config.yml`:
+
+```yml
+// app/config/config.yml
 elao_admin:
-    # Actions used in all administrations when the actions key is not overwritten
-    default_actions: ['list', 'read', 'create', 'update', 'delete']
     administrations:
+        # Name of the administration
         article:
-            # The FQCN of the model handled by this administration
-            model: Article
-            # A manager responsible for retrieving and persisting the model
-            manager: ArticleManager
-            # Actions available for this administration
+            options:
+                # The FQCN of the model handled by this administration
+                model: Acme\DemoBundle\Entity\Article
             actions:
-                # The alias of the service used as the Action
-                list:
-                    # The route definition of this action
-                    route:
-                        name: article_create
-                        pattern: /article/create
-                    parameters:
-                        # The template used to render the response
-                        view: AdminBundle:Action:create.html.twig
-                        # Pagination configuration (can be disabled)
-                        pagination:
-                            per_page: 30
-                create:
-                    # Parameters here are dependent of the Action
-                    security:   is_granted('ROLE_CREATE_ARTICLE')
-                    parameters:
-                        form_type: aticle_creation
-                delete:
-                    parameters:
-                        redirection: article_index
-        articleLolilol:
-            model: Article
-            manager: ArticleLolilolManager
-            actions:
-                read: ~
+                list:   ~
+                create: ~
+                read:   ~
                 update: ~
-        category:
-            model: Category
-            manager: ~
-            actions: ~
+                delete: ~
 ```
 
 ## How it works
@@ -92,3 +95,21 @@ dependency injection container.
 ### Form handling
 
 ### Templating
+
+## Full configuration reference:
+
+```yml
+elao_admin:
+    administrations:
+        # Where 'name' is the name of the administration
+        name:
+            options:              # Required
+                model:                ~ # Required
+                model_manager:        elao_admin.model_manager.doctrine
+                route_resolver:       elao_admin.route_resolver
+            actions:              # Required
+                # Where name is the name of the action
+                name:
+                    type:                 null # If not set: use the name of the action
+                    options:              [] # Every action has its own options
+```
