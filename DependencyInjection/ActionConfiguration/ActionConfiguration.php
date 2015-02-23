@@ -105,6 +105,7 @@ abstract class ActionConfiguration implements ConfigurationInterface
                         ->end()
                         ->arrayNode('schemes')
                             ->defaultValue($this->getRouteSchemes())
+                            ->prototype('scalar')->end()
                         ->end()
                     ->end()
                 ->end()
