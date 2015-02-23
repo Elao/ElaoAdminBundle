@@ -13,12 +13,21 @@ namespace Elao\Bundle\AdminBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Delete form type
  */
 class DeleteType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefault('validation_groups', ['Delete']);
+    }
+
     /**
      * {@inheritdoc}
      */
