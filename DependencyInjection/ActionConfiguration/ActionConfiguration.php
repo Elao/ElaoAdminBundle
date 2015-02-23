@@ -100,6 +100,12 @@ abstract class ActionConfiguration implements ConfigurationInterface
                             ->prototype('scalar')->end()
                             ->defaultValue($this->getRouteMethods())
                         ->end()
+                        ->scalarNode('host')
+                            ->defaultValue($this->getRouteHost())
+                        ->end()
+                        ->arrayNode('schemes')
+                            ->defaultValue($this->getRouteSchemes())
+                        ->end()
                     ->end()
                 ->end()
                 ->scalarNode('security')
@@ -184,6 +190,26 @@ abstract class ActionConfiguration implements ConfigurationInterface
      * @return array
      */
     protected function getRouteMethods()
+    {
+        return [];
+    }
+
+    /**
+     * Get default host for route dynamically
+     *
+     * @return array
+     */
+    protected function getRouteHost()
+    {
+        return '';
+    }
+
+    /**
+     * Get default schemes for route dynamically
+     *
+     * @return array
+     */
+    protected function getRouteSchemes()
     {
         return [];
     }
