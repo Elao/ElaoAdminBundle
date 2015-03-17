@@ -11,6 +11,8 @@
 
 namespace Elao\Bundle\AdminBundle\DependencyInjection\Model;
 
+use Doctrine\Common\Inflector\Inflector;
+
 /**
  * Administration
  */
@@ -33,7 +35,7 @@ class Administration
     /**
      * Construct
      *
-     * @param string $name
+     * @param string $this->name
      * @param array $options
      */
     public function __construct($name, array $options)
@@ -48,9 +50,9 @@ class Administration
      *
      * @return string
      */
-    public function getName()
+    public function getName($plural = null)
     {
-        return $this->name;
+        return static::applyPlural($this->name, $plural);
     }
 
     /**
@@ -128,9 +130,29 @@ class Administration
      *
      * @return string
      */
-    public function getNameLowerCase()
+    public function getNameLowerCase($plural = null)
     {
-        return strtolower(preg_replace('~(?<=\\w)([A-Z])~', '_$1', $this->name));
+        return Inflector::tableize(static::applyPlural($this->name, $plural));
+    }
+
+    /**
+     * Get name in lower case (for route names)
+     *
+     * @return string
+     */
+    public function getNameUpperWordCase($plural = null)
+    {
+        return Inflector::classify(static::applyPlural($this->name, $plural));
+    }
+
+    /**
+     * Get name in lower case (for route names)
+     *
+     * @return string
+     */
+    public function getNameCamelCase($plural = null)
+    {
+        return Inflector::classify(static::applyPlural($this->name, $plural));
     }
 
     /**
@@ -138,8 +160,25 @@ class Administration
      *
      * @return string
      */
-    public function getNameUrl()
+    public function getNameUrl($plural = null)
     {
-        return urlencode(strtolower(preg_replace('~(?<=\\w)([A-Z])~', '-$1', $this->name)));
+        return urlencode(str_replace('_', '-', $this->getNameLowerCase($plural)));
+    }
+
+    /**
+     * Apply plural rule
+     *
+     * @param string $word
+     * @param boolean|null $plural
+     *
+     * @return string
+     */
+    public static function applyPlural($word, $plural = null)
+    {
+        if ($plural === null) {
+            return $word;
+        }
+
+        return $plural ? Inflector::pluralize($word) : Inflector::singularize($word);
     }
 }

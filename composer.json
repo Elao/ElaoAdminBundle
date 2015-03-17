@@ -22,6 +22,7 @@
     "require": {
         "symfony/framework-bundle": "~2.7",
         "symfony/form": "~2.7",
+        "doctrine/inflector": "1.0.*",
         "knplabs/knp-paginator-bundle": "2.4.*"
     },
     "autoload": {
