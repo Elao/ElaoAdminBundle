@@ -22,7 +22,7 @@ class DoctrineModelManager implements ModelManagerInterface
     /**
      * The default Doctrine object manager
      *
-     * @var \Doctrine\Common\Peristence\ObjectManager
+     * @var \Doctrine\Common\Persistence\ObjectManager
      */
     protected $objectManager;
 
@@ -120,8 +120,10 @@ class DoctrineModelManager implements ModelManagerInterface
 
     /**
      * Get repository
+     * 
+     * @param string|null $className
      *
-     * @return Doctrine\ORM\EntityRepository
+     * @return \Doctrine\ORM\EntityRepository
      */
     protected function getRepository($className = null)
     {
