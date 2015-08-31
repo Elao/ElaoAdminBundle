@@ -64,10 +64,11 @@ class DoctrineModelManager implements ModelManagerInterface
 
         foreach ($parameters as $attribute => $value) {
             $property = sprintf('%s.%s', $queryBuilder->getRootAlias(), $attribute);
+            $attributeIdentifier = sprintf(':%s', $attribute);
 
             if ($value !== null) {
                 $queryBuilder
-                    ->andWhere($queryBuilder->expr()->eq($property, $attribute))
+                    ->andWhere($queryBuilder->expr()->eq($property, $attributeIdentifier))
                     ->setParameter($attribute, $value);
             } else {
                 $queryBuilder
