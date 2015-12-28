@@ -49,9 +49,9 @@ class DoctrineModelManager implements ModelManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function findAll(array $parameters = [])
+    public function findAll(array $parameters = [], array $sorting = [] )
     {
-        return $this->getRepository()->findBy($parameters);
+        return $this->getRepository()->findBy($parameters, $sorting);
     }
 
     /**
