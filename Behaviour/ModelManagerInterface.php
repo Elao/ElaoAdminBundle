@@ -29,10 +29,11 @@ interface ModelManagerInterface
      * Find all models
      *
      * @param array $parameters
+     * @param array $sorting
      *
      * @return Collection
      */
-    public function findAll(array $parameters = []);
+    public function findAll(array $parameters = [], array $sorting = []);
 
     /**
      * Get target for pagination: a list or a query.
