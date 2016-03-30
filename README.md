@@ -69,7 +69,7 @@ article_delete             GET|POST ANY    ANY  /article/{id}/delete
 
 Generating administrations is not about magic. It's about registering available
 actions, re-using existing code, and be able to easily extend everything. The
-ElaoMicroAdminBundle is made with all these considerations in mind.
+ElaoAdminBundle is made with all these considerations in mind.
 
 Administrations are pretty simple to understand: each administration has in
 common a model and a way of handling it. Then each administration registers a
