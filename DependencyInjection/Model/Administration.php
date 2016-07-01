@@ -25,24 +25,13 @@ class Administration
      */
     protected $name;
 
-    /**
-     * Options
-     *
-     * @var array
-     */
-    protected $options;
-
-    /**
-     * Construct
-     *
-     * @param string $this->name
-     * @param array $options
-     */
-    public function __construct($name, array $options)
+    public function __construct($name, $model, $modelManager, $routeResolver)
     {
-        $this->name    = $name;
-        $this->options = $options;
-        $this->actions = [];
+        $this->name = $name;
+        $this->model = $model;
+        $this->modelManager = $modelManager;
+        $this->routeResolver = $routeResolver;
+        //$this->actions = [];
     }
 
     /**
@@ -62,7 +51,7 @@ class Administration
      */
     public function getModel()
     {
-        return $this->options['model'];
+        return $this->model;
     }
 
     /**
@@ -72,7 +61,7 @@ class Administration
      */
     public function getModelManager()
     {
-        return $this->options['model_manager'];
+        return $this->modelManager;
     }
 
     /**
@@ -92,7 +81,7 @@ class Administration
      */
     public function getRouteResolver()
     {
-        return $this->options['route_resolver'];
+        return $this->routeResolver;
     }
 
     /**
@@ -110,20 +99,20 @@ class Administration
      *
      * @param Action $action
      */
-    public function addAction(Action $action)
+    /*public function addAction(Action $action)
     {
         $this->actions[$action->getAlias()] = $action;
-    }
+    }*/
 
     /**
      * Get actions
      *
      * @return array
      */
-    public function getActions()
+    /*public function getActions()
     {
         return $this->actions;
-    }
+    }*/
 
     /**
      * Get name in lower case (for route names)
@@ -133,16 +122,6 @@ class Administration
     public function getNameLowerCase($plural = null)
     {
         return Inflector::tableize(static::applyPlural($this->name, $plural));
-    }
-
-    /**
-     * Get name in lower case (for route names)
-     *
-     * @return string
-     */
-    public function getNameUpperWordCase($plural = null)
-    {
-        return Inflector::classify(static::applyPlural($this->name, $plural));
     }
 
     /**

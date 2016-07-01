@@ -19,7 +19,7 @@
         </service>
 
         <!-- Route Resolvers -->
-        <service id="elao_admin.route_resolver" class="%elao_admin.route_resolver.class%" abstract="true">
+        <service id="elao_admin.route_resolver" class="%elao_admin.route_resolver.class%">
             <argument type="service" id="router" />
         </service>
 

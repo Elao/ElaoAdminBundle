@@ -19,6 +19,18 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
+    private $factories;
+
+    /**
+     * Constructor.
+     *
+     * @param array $factories
+     */
+    public function __construct(array $factories)
+    {
+        $this->factories = $factories;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -27,49 +39,46 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('elao_admin');
 
-        $rootNode
+        $actionNodeBuilder = $rootNode
             ->children()
                 ->arrayNode('administrations')
                     ->useAttributeAsKey('name')
                     ->prototype('array')
+                        ->addDefaultsIfNotSet()
                         ->children()
-                            ->arrayNode('options')
+                            ->scalarNode('model')
                                 ->isRequired()
                                 ->cannotBeEmpty()
-                                ->children()
-                                    ->scalarNode('model')
-                                        ->isRequired()
-                                        ->cannotBeEmpty()
-                                    ->end()
-                                    ->scalarNode('model_manager')
-                                        ->defaultValue('elao_admin.model_manager.doctrine')
-                                    ->end()
-                                    ->scalarNode('route_resolver')
-                                        ->defaultValue('elao_admin.route_resolver')
-                                    ->end()
-                                ->end()
                             ->end()
+                            ->scalarNode('repository')
+                                ->defaultValue('elao_admin.model_manager.doctrine')
+                            ->end()
+                            /*->scalarNode('route_resolver')
+                                ->defaultValue('elao_admin.route_resolver')
+                            ->end()*/
                             ->arrayNode('actions')
                                 ->isRequired()
+                                ->disallowNewKeysInSubsequentConfigs()
                                 ->cannotBeEmpty()
                                 ->useAttributeAsKey('name')
                                 ->prototype('array')
                                     ->addDefaultsIfNotSet()
-                                    ->children()
-                                        ->scalarNode('type')
-                                            ->defaultNull()
-                                        ->end()
-                                        ->variableNode('options')
-                                            ->treatNullLike([])
-                                            ->defaultValue([])
-                                        ->end()
+                                    ->children();
+
+        foreach ($this->factories as $factory) {
+            $factoryNode = $actionNodeBuilder->arrayNode($factory->getKey())->canBeUnset();
+            $factory->addConfiguration($factoryNode);
+        }
+
+        $actionNodeBuilder
                                     ->end()
                                 ->end()
                             ->end()
                         ->end()
                     ->end()
                 ->end()
-            ->end();
+            ->end()
+        ;
 
         return $treeBuilder;
     }

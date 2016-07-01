@@ -12,10 +12,16 @@
 namespace Elao\Bundle\AdminBundle\DependencyInjection;
 
 use Exception;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Elao\Bundle\AdminBundle\Utils\Word;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -25,11 +31,18 @@ use Symfony\Component\DependencyInjection\Loader;
 class ElaoAdminExtension extends Extension
 {
     /**
+     * Action factories
+     *
+     * @var array
+     */
+    private $factories = [];
+
+    /**
      * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
+        $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
@@ -37,6 +50,67 @@ class ElaoAdminExtension extends Extension
         $loader->load('services.xml');
         $loader->load('events.xml');
 
-        $container->setParameter('elao_admin.parameters.administrations', $config['administrations']);
+        $this->createAdministrations($config['administrations'], $container);
+    }
+
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        return new Configuration($this->factories);
+    }
+
+    public function addActionFactory(/*ActionFactoryInterface*/ $factory)
+    {
+        $this->factories[$factory->getKey()] = $factory;
+    }
+
+    protected function createAdministrations($administrations, ContainerBuilder $container)
+    {
+        $routeLoader = $container->getDefinition('elao_admin.routing_loader');
+        $securityListener = $container->getDefinition('elao_admin.event.subscriber.security');
+        $routeResolver = $container->getDefinition('elao_admin.route_resolver');
+
+        foreach ($administrations as $name => $config) {
+            foreach ($config['actions'] as $alias => $action) {
+                foreach ($action as $type => $rawConfig) {
+                    $factory = $this->factories[$type];
+
+                    $serviceId = sprintf('action.%s.%s', Word::lowerCase($name), Word::lowerCase($alias));
+
+                    $actionConfig = $this->processRawConfig($rawConfig, $factory->getTokens($name, $alias));
+                    $actionConfig['route']['controller'] = sprintf('%s:getResponse', $serviceId);
+                    $actionConfig['name'] = $name;
+                    $actionConfig['alias'] = $alias;
+
+                    $definition = new DefinitionDecorator($factory->getServiceId());
+
+                    $factory->configureAction($definition, $actionConfig, $name, $alias);
+
+                    $container->setDefinition($serviceId, $definition);
+
+                    $routeLoader->addMethodCall('addRoute', $actionConfig['route']);
+                    $routeResolver->addMethodCall('addRoute', [$name, $alias, $actionConfig['route']]);
+
+                    if (isset($actionConfig['security'])) {
+                        $securityListener->addMethodCall('setRouteSecurity', [
+                            $actionConfig['route']['name'],
+                            $actionConfig['security']
+                        ]);
+                    }
+                }
+            }
+        }
+    }
+
+    private function processRawConfig(array $config, array $tokens)
+    {
+        foreach ($config as $key => $value) {
+            if (is_array($value)) {
+                $config[$key] = $this->processRawConfig($value, $tokens);
+            } else {
+                $config[$key] = str_replace(array_keys($tokens), array_values($tokens), $value);
+            }
+        }
+
+        return $config;
     }
 }
