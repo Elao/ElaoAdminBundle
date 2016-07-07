@@ -21,7 +21,7 @@ interface ActionInterface
     /**
      * Return the http response
      *
-     * @return Doctrine\Component\HttpKernel\Response
+     * @return Symfony\Component\HttpFoundation\Response
      */
     public function getResponse(Request $request);
 }

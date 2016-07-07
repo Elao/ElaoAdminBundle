@@ -24,6 +24,7 @@
         "doctrine/inflector": "~1.1"
     },
     "suggest": {
+        "doctrine/orm": "^2.5",
         "elao/html-action-bundle": "*",
         "elao/rest-action-bundle": "*"
     },
