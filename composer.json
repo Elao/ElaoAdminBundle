@@ -24,9 +24,12 @@
         "doctrine/inflector": "~1.1"
     },
     "suggest": {
-        "doctrine/orm": "^2.5",
-        "elao/html-action-bundle": "*",
-        "elao/rest-action-bundle": "*"
+        "doctrine/orm": "For using the built-in DoctrineModelManager",
+        "elao/html-action-bundle": "For easily performing CRUD operations using Symfony forms",
+        "elao/rest-action-bundle": "For building an Api through REST actions"
+    },
+    "conflict": {
+        "doctrine/orm": "<2.5"
     },
     "autoload": {
         "psr-4": {
