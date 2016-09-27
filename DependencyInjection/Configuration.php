@@ -66,7 +66,11 @@ class Configuration implements ConfigurationInterface
                                     ->children();
 
         foreach ($this->factories as $factory) {
-            $factoryNode = $actionNodeBuilder->arrayNode($factory->getKey())->canBeUnset();
+            $factoryNode = $actionNodeBuilder
+                ->arrayNode($factory->getKey())
+                ->canBeUnset()
+                ->addDefaultsIfNotSet()
+            ;
             $factory->addConfiguration($factoryNode);
         }
 
