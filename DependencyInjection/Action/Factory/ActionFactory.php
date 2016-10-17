@@ -4,12 +4,18 @@ namespace Elao\Bundle\AdminBundle\DependencyInjection\Action\Factory;
 
 use Elao\Bundle\AdminBundle\Utils\Word;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\DependencyInjection\Definition;
 
 /**
  *Abstract Action Factory
  */
 abstract class ActionFactory
 {
+    /**
+     * Add configuration
+     *
+     * @param NodeDefinition $node
+     */
     public function addConfiguration(NodeDefinition $node)
     {
         $node
@@ -25,10 +31,6 @@ abstract class ActionFactory
                             ->cannotBeEmpty()
                             ->defaultValue($this->getRoutePattern())
                         ->end()
-                        /*->scalarNode('controller')
-                            ->cannotBeEmpty()
-                            ->defaultValue($this->getRouteController())
-                        ->end()*/
                         ->arrayNode('parameters')
                             ->defaultValue($this->getRouteParameters())
                             ->prototype('variable')->end()
@@ -62,7 +64,13 @@ abstract class ActionFactory
         ;
     }
 
-    public function configureAction($definition, array $config)
+    /**
+     * Configure action service
+     *
+     * @param Definition $definition
+     * @param array $config
+     */
+    public function configureAction(Definition $definition, array $config)
     {
         $parameters = array_diff_key($config, array_flip(['route', 'security']));
 

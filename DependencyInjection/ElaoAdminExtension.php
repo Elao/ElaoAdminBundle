@@ -11,6 +11,8 @@
 
 namespace Elao\Bundle\AdminBundle\DependencyInjection;
 
+use Elao\Bundle\AdminBundle\DependencyInjection\Action\Factory\ActionFactory;
+use Elao\Bundle\AdminBundle\Utils\Word;
 use Exception;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
@@ -21,7 +23,6 @@ use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Elao\Bundle\AdminBundle\Utils\Word;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -53,17 +54,36 @@ class ElaoAdminExtension extends Extension
         $this->createAdministrations($config['administrations'], $container);
     }
 
+    /**
+     * Get configuration
+     *
+     * @param array $config
+     * @param ContainerBuilder $container
+     *
+     * @return Configuration
+     */
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
         return new Configuration($this->factories);
     }
 
-    public function addActionFactory(/*ActionFactoryInterface*/ $factory)
+    /**
+     * Add action factory
+     *
+     * @param ActionFactoryInterface $factory
+     */
+    public function addActionFactory(ActionFactory $factory)
     {
         $this->factories[$factory->getKey()] = $factory;
     }
 
-    protected function createAdministrations($administrations, ContainerBuilder $container)
+    /**
+     * Create administrations
+     *
+     * @param array $administrations
+     * @param ContainerBuilder $container
+     */
+    protected function createAdministrations(array $administrations, ContainerBuilder $container)
     {
         $routeLoader = $container->getDefinition('elao_admin.routing_loader');
         $securityListener = $container->getDefinition('elao_admin.event.subscriber.security');
@@ -101,12 +121,20 @@ class ElaoAdminExtension extends Extension
         }
     }
 
+    /**
+     * Dynamize configuration with tokens
+     *
+     * @param array $config
+     * @param array $tokens
+     *
+     * @return array
+     */
     private function processRawConfig(array $config, array $tokens)
     {
         foreach ($config as $key => $value) {
             if (is_array($value)) {
                 $config[$key] = $this->processRawConfig($value, $tokens);
-            } else {
+            } elseif (is_string($value)) {
                 $config[$key] = str_replace(array_keys($tokens), array_values($tokens), $value);
             }
         }

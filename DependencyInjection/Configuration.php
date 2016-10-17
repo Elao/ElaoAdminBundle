@@ -46,15 +46,9 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->addDefaultsIfNotSet()
                         ->children()
-                            ->scalarNode('model')
+                            /*->scalarNode('model')
                                 ->isRequired()
                                 ->cannotBeEmpty()
-                            ->end()
-                            ->scalarNode('repository')
-                                ->defaultValue('elao_admin.model_manager.doctrine')
-                            ->end()
-                            /*->scalarNode('route_resolver')
-                                ->defaultValue('elao_admin.route_resolver')
                             ->end()*/
                             ->arrayNode('actions')
                                 ->isRequired()
@@ -62,14 +56,12 @@ class Configuration implements ConfigurationInterface
                                 ->cannotBeEmpty()
                                 ->useAttributeAsKey('name')
                                 ->prototype('array')
-                                    ->addDefaultsIfNotSet()
                                     ->children();
 
         foreach ($this->factories as $factory) {
             $factoryNode = $actionNodeBuilder
                 ->arrayNode($factory->getKey())
                 ->canBeUnset()
-                ->addDefaultsIfNotSet()
             ;
             $factory->addConfiguration($factoryNode);
         }

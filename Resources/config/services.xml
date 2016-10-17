@@ -4,36 +4,25 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-        <parameter key="elao_admin.model_manager.doctrine.class">Elao\Bundle\AdminBundle\Service\DoctrineModelManager</parameter>
-        <parameter key="elao_admin.route_resolver.class">Elao\Bundle\AdminBundle\Service\RouteResolver</parameter>
-        <parameter key="elao_admin.routing_loader.class">Elao\Bundle\AdminBundle\Routing\AdminLoader</parameter>
-        <parameter key="elao_admin.notifier.flash_message.class">Elao\Bundle\AdminBundle\Service\FlashMessageNotifier</parameter>
-    </parameters>
-
     <services>
-        <!-- Model Managers -->
-        <service id="elao_admin.model_manager.doctrine" class="%elao_admin.model_manager.doctrine.class%" abstract="true">
-            <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument><!-- Model Classname --></argument>
+        <!-- Repositories -->
+        <service id="elao_admin.repository.doctrine" class="Elao\Bundle\AdminBundle\ORM\DoctrineRepository">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
         </service>
 
         <!-- Route Resolvers -->
-        <service id="elao_admin.route_resolver" class="%elao_admin.route_resolver.class%">
+        <service id="elao_admin.route_resolver" class="Elao\Bundle\AdminBundle\Service\RouteResolver">
             <argument type="service" id="router" />
         </service>
 
         <!-- Routing Loader -->
-        <service id="elao_admin.routing_loader" class="%elao_admin.routing_loader.class%">
+        <service id="elao_admin.routing_loader" class="Elao\Bundle\AdminBundle\Routing\AdminLoader">
             <tag name="routing.loader" />
         </service>
 
         <!-- Notifier -->
-        <service id="elao_admin.notifier" class="%elao_admin.notifier.flash_message.class%">
+        <service id="elao_admin.notifier" class="Elao\Bundle\AdminBundle\Service\FlashMessageNotifier">
             <argument type="service" id="session" />
         </service>
-
-        <!-- Abstract Action -->
-        <service id="elao_admin.action" abstract="true"></service>
     </services>
 </container>
