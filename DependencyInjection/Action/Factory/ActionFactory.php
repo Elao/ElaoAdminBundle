@@ -2,19 +2,40 @@
 
 namespace Elao\Bundle\AdminBundle\DependencyInjection\Action\Factory;
 
+use Elao\Bundle\AdminBundle\Behaviour\ActionFactoryInterface;
 use Elao\Bundle\AdminBundle\Utils\Word;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
- *Abstract Action Factory
+ * Abstract Action Factory
  */
-abstract class ActionFactory
+abstract class ActionFactory implements ActionFactoryInterface
 {
     /**
-     * Add configuration
+     * Configuration
      *
-     * @param NodeDefinition $node
+     * @var array
+     */
+    protected $config;
+
+    /**
+     * Route configuration
+     *
+     * @var array
+     */
+    protected $route;
+
+    /**
+     * Security restriction
+     *
+     * @var null|string
+     */
+    protected $security = null;
+
+    /**
+     * {@inheritdoc}
      */
     public function addConfiguration(NodeDefinition $node)
     {
@@ -65,16 +86,62 @@ abstract class ActionFactory
     }
 
     /**
-     * Configure action service
-     *
-     * @param Definition $definition
-     * @param array $config
+     * {@inheritdoc}
      */
-    public function configureAction(Definition $definition, array $config)
+    public function processConfig(array $rawConfig, array $administration, $name, $alias)
     {
-        $parameters = array_diff_key($config, array_flip(['route', 'security']));
+        $config = array_merge(
+            $administration,
+            $this->processRawConfig($rawConfig, $this->getTokens($name, $alias)),
+            ['name' => $name, 'alias' => $alias]
+        );
 
-        $definition->addArgument($parameters);
+        $this->route = $config['route'];
+        $this->security = isset($config['security']) ? $config['security'] : null;
+        $this->config = array_diff_key($config, array_flip(['route', 'security']));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoute() {
+        return $this->route;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSecurity() {
+        return $this->security;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureAction(Definition $definition)
+    {
+        // Configure your action service definition
+    }
+
+    /**
+     * Dynamize configuration with tokens
+     *
+     * @param array $config
+     * @param array $tokens
+     *
+     * @return array
+     */
+    protected function processRawConfig(array $config, array $tokens)
+    {
+        foreach ($config as $key => $value) {
+            if (is_array($value)) {
+                $config[$key] = $this->processRawConfig($value, $tokens);
+            } elseif (is_string($value)) {
+                $config[$key] = str_replace(array_keys($tokens), array_values($tokens), $value);
+            }
+        }
+
+        return $config;
     }
 
     /**
@@ -85,7 +152,7 @@ abstract class ActionFactory
      *
      * @return array
      */
-    public function getTokens($name, $alias)
+    protected function getTokens($name, $alias)
     {
         return [
             '%name%' => Word::lowerCase($name, false),
@@ -99,20 +166,6 @@ abstract class ActionFactory
             '%-alias-%' => Word::url($alias),
         ];
     }
-
-    /**
-     * Get action key
-     *
-     * @return string
-     */
-    abstract public function getKey();
-
-    /**
-     * Get action key
-     *
-     * @return string
-     */
-    abstract public function getServiceId();
 
     /**
      * Get default name for route dynamically

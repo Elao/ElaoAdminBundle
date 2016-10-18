@@ -11,7 +11,8 @@
 
 namespace Elao\Bundle\AdminBundle\DependencyInjection;
 
-use Elao\Bundle\AdminBundle\DependencyInjection\Action\Factory\ActionFactory;
+use Elao\Bundle\AdminBundle\Behaviour\ActionFactoryInterface;
+use Elao\Bundle\AdminBundle\Behaviour\AdministrationConfiguratorInterface;
 use Elao\Bundle\AdminBundle\Utils\Word;
 use Exception;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
@@ -32,11 +33,18 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class ElaoAdminExtension extends Extension
 {
     /**
+     * Administration configurators
+     *
+     * @var array
+     */
+    private $administrationConfigurators = [];
+
+    /**
      * Action factories
      *
      * @var array
      */
-    private $factories = [];
+    private $actionFactories = [];
 
     /**
      * {@inheritdoc}
@@ -64,7 +72,17 @@ class ElaoAdminExtension extends Extension
      */
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
-        return new Configuration($this->factories);
+        return new Configuration($this->administrationConfigurators, $this->actionFactories);
+    }
+
+    /**
+     * Add action factory
+     *
+     * @param AdministrationConfiguratorInterface $configurator
+     */
+    public function addAdministrationConfigurator(AdministrationConfiguratorInterface $configurator)
+    {
+        $this->administrationConfigurators[] = $configurator;
     }
 
     /**
@@ -72,9 +90,9 @@ class ElaoAdminExtension extends Extension
      *
      * @param ActionFactoryInterface $factory
      */
-    public function addActionFactory(ActionFactory $factory)
+    public function addActionFactory(ActionFactoryInterface $factory)
     {
-        $this->factories[$factory->getKey()] = $factory;
+        $this->actionFactories[$factory->getKey()] = $factory;
     }
 
     /**
@@ -92,53 +110,34 @@ class ElaoAdminExtension extends Extension
         foreach ($administrations as $name => $config) {
             foreach ($config['actions'] as $alias => $action) {
                 foreach ($action as $type => $rawConfig) {
-                    $factory = $this->factories[$type];
+                    $factory = $this->actionFactories[$type];
+
+                    $factory->processConfig(
+                        $rawConfig,
+                        array_diff_key($config, array_flip(['actions'])),
+                        $name,
+                        $alias
+                    );
 
                     $serviceId = sprintf('action.%s.%s', Word::lowerCase($name), Word::lowerCase($alias));
-
-                    $actionConfig = $this->processRawConfig($rawConfig, $factory->getTokens($name, $alias));
-                    $actionConfig['route']['controller'] = sprintf('%s:getResponse', $serviceId);
-                    $actionConfig['name'] = $name;
-                    $actionConfig['alias'] = $alias;
-
                     $definition = new DefinitionDecorator($factory->getServiceId());
 
-                    $factory->configureAction($definition, $actionConfig, $name, $alias);
-
+                    $factory->configureAction($definition);
                     $container->setDefinition($serviceId, $definition);
 
-                    $routeLoader->addMethodCall('addRoute', $actionConfig['route']);
-                    $routeResolver->addMethodCall('addRoute', [$name, $alias, $actionConfig['route']]);
+                    $route = array_merge(
+                        $factory->getRoute(),
+                        ['controller' => sprintf('%s:getResponse', $serviceId)]
+                    );
 
-                    if (isset($actionConfig['security'])) {
-                        $securityListener->addMethodCall('setRouteSecurity', [
-                            $actionConfig['route']['name'],
-                            $actionConfig['security']
-                        ]);
+                    $routeLoader->addMethodCall('addRoute', $route);
+                    $routeResolver->addMethodCall('addRoute', [$name, $alias, $route]);
+
+                    if ($security = $factory->getSecurity()) {
+                        $securityListener->addMethodCall('setRouteSecurity', [$route['name'], $security]);
                     }
                 }
             }
         }
-    }
-
-    /**
-     * Dynamize configuration with tokens
-     *
-     * @param array $config
-     * @param array $tokens
-     *
-     * @return array
-     */
-    private function processRawConfig(array $config, array $tokens)
-    {
-        foreach ($config as $key => $value) {
-            if (is_array($value)) {
-                $config[$key] = $this->processRawConfig($value, $tokens);
-            } elseif (is_string($value)) {
-                $config[$key] = str_replace(array_keys($tokens), array_values($tokens), $value);
-            }
-        }
-
-        return $config;
     }
 }

@@ -19,16 +19,30 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    private $factories;
+    /**
+     * Administration configurators
+     *
+     * @var Elao\Bundle\AdminBundle\Behaviour\AdministrationConfiguratorInterface[]
+     */
+    private $administrationConfigurators;
+
+    /**
+     * Action factories
+     *
+     * @var Elao\Bundle\AdminBundle\Behaviour\ActionFactoryInterface[]
+     */
+    private $actionFactories;
 
     /**
      * Constructor.
      *
-     * @param array $factories
+     * @param array $administrationConfigurators
+     * @param array $actionFactories
      */
-    public function __construct(array $factories)
+    public function __construct(array $administrationConfigurators, array $actionFactories)
     {
-        $this->factories = $factories;
+        $this->administrationConfigurators = $administrationConfigurators;
+        $this->actionFactories = $actionFactories;
     }
 
     /**
@@ -39,17 +53,19 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('elao_admin');
 
-        $actionNodeBuilder = $rootNode
+        $administrationNodeBuilder = $rootNode
             ->children()
                 ->arrayNode('administrations')
                     ->useAttributeAsKey('name')
                     ->prototype('array')
                         ->addDefaultsIfNotSet()
-                        ->children()
-                            /*->scalarNode('model')
-                                ->isRequired()
-                                ->cannotBeEmpty()
-                            ->end()*/
+                        ->children();
+
+        foreach ($this->administrationConfigurators as $configurator) {
+            $configurator->configure($administrationNodeBuilder);
+        }
+
+        $actionNodeBuilder = $administrationNodeBuilder
                             ->arrayNode('actions')
                                 ->isRequired()
                                 ->disallowNewKeysInSubsequentConfigs()
@@ -58,7 +74,7 @@ class Configuration implements ConfigurationInterface
                                 ->prototype('array')
                                     ->children();
 
-        foreach ($this->factories as $factory) {
+        foreach ($this->actionFactories as $factory) {
             $factoryNode = $actionNodeBuilder
                 ->arrayNode($factory->getKey())
                 ->canBeUnset()

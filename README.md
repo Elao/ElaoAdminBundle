@@ -34,6 +34,12 @@ elao_admin_bundle:
 
 ```
 
+## Usage
+
+Use a set of Actions or create your own.
+
+
+
 Configure some actions in your `config.yml`:
 
 ```yml
@@ -41,7 +47,7 @@ Configure some actions in your `config.yml`:
 elao_admin:
     administrations:
         post:
-            # model: BlogBundle\Entity\Post
+            repository: app.repository.post
             actions:
                 list:
                     html_list: ~
@@ -108,12 +114,14 @@ elao_admin:
     administrations:
         # Where 'name' is the name of the administration
         name:
-            model:    ~ # Required
-            actions:    # Required
+            # Administration-level options (optional)
+            foo: true
+            # (required)
+            actions:
                 # Where name is the name of the action
                 name:
-                    type:       null # If not set: use the name of the action
-                    options:
+                    # Where action_type is a registered action type.
+                    action_type:
                         # Every action has its own options
 ```
 
