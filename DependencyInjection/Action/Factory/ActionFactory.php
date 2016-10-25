@@ -91,8 +91,10 @@ abstract class ActionFactory implements ActionFactoryInterface
     public function processConfig(array $rawConfig, array $administration, $name, $alias)
     {
         $config = array_merge(
-            $administration,
-            $this->processRawConfig($rawConfig, $this->getTokens($name, $alias)),
+            $this->processRawConfig(
+                array_merge($administration, $rawConfig),
+                $this->getTokens($name, $alias)
+            ),
             ['name' => $name, 'alias' => $alias]
         );
 
