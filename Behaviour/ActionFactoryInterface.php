@@ -49,7 +49,6 @@ interface ActionFactoryInterface
      * Configure the action service
      *
      * @param Definition $definition
-     * @param array $config
      */
     public function configureAction(Definition $definition);
 
@@ -63,7 +62,7 @@ interface ActionFactoryInterface
     /**
      * Get security restriction (optional)
      *
-     * @return null|strin
+     * @return null|string
      */
     public function getSecurity();
 }
