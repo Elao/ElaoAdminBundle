@@ -5,11 +5,6 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <!-- Repositories -->
-        <service id="elao_admin.repository.doctrine" class="Elao\Bundle\AdminBundle\ORM\DoctrineRepository">
-            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-        </service>
-
         <!-- Route Resolvers -->
         <service id="elao_admin.route_resolver" class="Elao\Bundle\AdminBundle\Service\RouteResolver">
             <argument type="service" id="router" />

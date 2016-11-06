@@ -59,6 +59,10 @@ class ElaoAdminExtension extends Extension
         $loader->load('services.xml');
         $loader->load('events.xml');
 
+        if ($config['doctrine_service_repositories']) {
+            $loader->load('doctrine_service_repositories.xml');
+        }
+
         $this->createAdministrations($config['administrations'], $container);
     }
 

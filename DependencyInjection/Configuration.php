@@ -55,6 +55,10 @@ class Configuration implements ConfigurationInterface
 
         $administrationNodeBuilder = $rootNode
             ->children()
+                ->booleanNode('doctrine_service_repositories')
+                    ->info('Enabled Doctrine service repositories feature')
+                    ->defaultFalse()
+                ->end()
                 ->arrayNode('administrations')
                     ->useAttributeAsKey('name')
                     ->prototype('array')
