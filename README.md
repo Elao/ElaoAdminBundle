@@ -1,6 +1,26 @@
 Elao Admin Bundle
 =================
 
+> Write your controller once, use it for all your models.
+
+## What?
+
+The AdminBundle helps you define reusable __Actions__ that can be defined as __route controllers__ for _any_ model.
+
+## Why?
+
+The AdminBundle improves your productivity when implementing similar controller behavior for several models, such as CRUD back-end.
+
+## How?
+
+The AdminBundle declares Actions as abstract services, instanciates and configures one instance for each model and register the corresponding route in the Symfony router.
+
+You just need to say "I want a `list` of `user`." and the AdminBundle register a `/users` route that run a `ListAction` instance configured to handle the `User` model.
+
+## Design goals
+
+The AdminBundle is meant to improve your productivity and remain flexible and extendable.
+
 ## Installation
 
 Require the bundle in _Composer_:
@@ -97,32 +117,7 @@ This config will generate the following routes:
 | Name        | Method   | Scheme | Host | Path               |
 | ----------- | -------- | ------ | ---- | ------------------ |
 | post_list   | GET      | ANY    | ANY  | /posts             |
-| post_create | GET|POST | ANY    | ANY  | /posts/new         |
-| post_update | GET|POST | ANY    | ANY  | /posts/{id}/edit   |
+| post_create | GET/POST | ANY    | ANY  | /posts/new         |
+| post_update | GET/POST | ANY    | ANY  | /posts/{id}/edit   |
 | post_read   | GET      | ANY    | ANY  | /posts/{id}        |
-| post_delete | GET|POST | ANY    | ANY  | /posts/{id}/delete |
-
-## How it works
-
-Generating administrations is not about magic. It's about registering available
-actions, re-using existing code, and be able to easily extend everything. The
-ElaoAdminBundle is made with all these considerations in mind.
-
-Administrations are pretty simple to understand: each administration has in
-common a model and a way of handling it. Then each administration registers a
-set of actions.
-
-## Stack
-
-Here is a short explanation of what each element of the stack is doing and how
-it is working.
-
-### Actions
-
-_Disclaimer_: we choose to end actions' name by Action since there may be
-conflicts between short names (index, create, etc) and PHP keywords.
-
-### Route Loading
-
-Routes for each action are registered just after the action registration in the
-dependency injection container.
+| post_delete | GET/POST | ANY    | ANY  | /posts/{id}/delete |
