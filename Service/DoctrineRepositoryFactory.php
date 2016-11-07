@@ -15,10 +15,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory;
 use Doctrine\ORM\Repository\RepositoryFactory;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 final class DoctrineRepositoryFactory implements RepositoryFactory, ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * Default repository factory
      *
@@ -39,14 +41,6 @@ final class DoctrineRepositoryFactory implements RepositoryFactory, ContainerAwa
     public function __construct()
     {
         $this->defaultFactory = new DefaultRepositoryFactory();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 
     /**
