@@ -11,6 +11,9 @@
 
 namespace Elao\Bundle\AdminBundle\Behaviour;
 
+/**
+ * Adds Pagination to RepositoryInterface
+ */
 interface PaginableRepositoryInterface {
     /**
      * Create an iterable for pagination

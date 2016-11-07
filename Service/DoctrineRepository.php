@@ -18,7 +18,8 @@ use Elao\Bundle\AdminBundle\Behaviour\PaginableRepositoryInterface;
 /**
  * Doctrine repository
  */
-class DoctrineRepository extends EntityRepository implements RepositoryInterface, PaginableRepositoryInterface {
+class DoctrineRepository extends EntityRepository implements RepositoryInterface, PaginableRepositoryInterface
+{
     /**
      * {@inheritdoc}
      */

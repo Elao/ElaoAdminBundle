@@ -36,45 +36,71 @@ elao_admin_bundle:
 
 ## Usage
 
-Use a set of Actions or create your own.
+Use a set of Actions:
 
+- [HTML Actions](https://github.com/Elao/ElaoHtmlActionBundle): For easily performing CRUD operations using Symfony forms.
+- [REST Actions](https://github.com/Elao/ElaoRestActionBundle): For building an Api through REST actions.
 
+Or [create your own set of actions](Resources/doc/actions.md)!
+
+### Configuration
 
 Configure some actions in your `config.yml`:
 
 ```yml
-// app/config/config.yml
+# app/config/config.yml
 elao_admin:
     administrations:
-        post:
-            repository: app.repository.post
+        # Where 'name' is the name of the administration
+        name:
+            # Administration-level options (optional)
+            foo: true
+            # (required)
             actions:
-                list:
-                    html_list: ~
-                create:
-                    html_create:
+                # Where 'alias' is the alias of the action
+                alias:
+                    # Where 'action_type' is a registered action type.
+                    action_type:
+                        # Every action has its own options
+```
+
+Here's an example with some action provided by the ElaoHtmlActionBundle.
+
+```yml
+# app/config/config.yml
+elao_admin:
+    administrations:
+        post: # The name of the administration (usualy, the model name)
+            repository: app.repository.post # The repository to use to access the model
+            actions:
+                list:               # A "list" action,
+                    html_list: ~    # that use default configuration for "html_list".
+
+                create:             # A "create" action,
+                    html_create:    # that use "html_create" and specify the form to use.
                         form: BlogBundle\Form\PostType
-                update:
-                    html_update:
+
+                update:             # A "update" action,
+                    html_update:    # that use "html_update" and specify the form to use.
                         form: BlogBundle\Form\PostType
-                read:
-                    html_read: ~
-                delete:
-                    html_delete:
+
+                read:               # A "read" action,
+                    html_read: ~    # that use default configuration for "html_read".
+
+                delete:             # A "delete" action,
+                    html_delete:    # that use "html_delete" and adds a security restriction.
                         security: has_role('ROLE_ADMIN')
 ```
 
 This config will generate the following routes:
 
-|-------------|----------|--------|------|--------------------|
 | Name        | Method   | Scheme | Host | Path               |
-|-------------|----------|--------|------|--------------------|
+| ----------- | -------- | ------ | ---- | ------------------ |
 | post_list   | GET      | ANY    | ANY  | /posts             |
 | post_create | GET|POST | ANY    | ANY  | /posts/new         |
 | post_update | GET|POST | ANY    | ANY  | /posts/{id}/edit   |
 | post_read   | GET      | ANY    | ANY  | /posts/{id}        |
 | post_delete | GET|POST | ANY    | ANY  | /posts/{id}/delete |
-|-------------|----------|--------|------|--------------------|
 
 ## How it works
 
@@ -100,59 +126,3 @@ conflicts between short names (index, create, etc) and PHP keywords.
 
 Routes for each action are registered just after the action registration in the
 dependency injection container.
-
-### Model management
-
-### Form handling
-
-### Templating
-
-## Full configuration reference:
-
-```yml
-elao_admin:
-    administrations:
-        # Where 'name' is the name of the administration
-        name:
-            # Administration-level options (optional)
-            foo: true
-            # (required)
-            actions:
-                # Where name is the name of the action
-                name:
-                    # Where action_type is a registered action type.
-                    action_type:
-                        # Every action has its own options
-```
-
-## Register actions
-
-
-
-```php
-<?php
-
-namespace AppBundle;
-
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use AppBundle\DependencyInjection\Action\Factory as ActionFactory;
-
-class AppBundle extends Bundle
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-
-        $extension = $container->getExtension('elao_admin');
-        $extension->addActionFactory(new ActionFactory\ListActionFactory());
-        $extension->addActionFactory(new ActionFactory\UpdateActionFactory());
-        $extension->addActionFactory(new ActionFactory\CreateActionFactory());
-        $extension->addActionFactory(new ActionFactory\DeleteActionFactory());
-        $extension->addActionFactory(new ActionFactory\ReadActionFactory());
-    }
-}
-```

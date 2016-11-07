@@ -11,6 +11,9 @@
 
 namespace Elao\Bundle\AdminBundle\Behaviour;
 
+/**
+ * Repository interface
+ */
 interface RepositoryInterface {
     /**
      * Create a new instance of the model

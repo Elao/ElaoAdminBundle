@@ -14,7 +14,6 @@ namespace Elao\Bundle\AdminBundle\DependencyInjection;
 use Elao\Bundle\AdminBundle\Behaviour\ActionFactoryInterface;
 use Elao\Bundle\AdminBundle\Behaviour\AdministrationConfiguratorInterface;
 use Elao\Bundle\AdminBundle\Utils\Word;
-use Exception;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
