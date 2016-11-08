@@ -121,3 +121,9 @@ This config will generate the following routes:
 | post_update | GET/POST | ANY    | ANY  | /posts/{id}/edit   |
 | post_read   | GET      | ANY    | ANY  | /posts/{id}        |
 | post_delete | GET/POST | ANY    | ANY  | /posts/{id}/delete |
+
+### Configuration detail
+
+To get the full detail and default values for yout administration just run:
+
+    bin/console debug:config ElaoAdminBundle
