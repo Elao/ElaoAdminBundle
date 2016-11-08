@@ -1,4 +1,4 @@
-Elao Admin Bundle
+Elao Admin Bundle ![](https://img.shields.io/badge/Symfony-3.0-blue.svg)
 =================
 
 > Write your controller once, use it for all your models.
