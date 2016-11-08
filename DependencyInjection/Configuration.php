@@ -3,7 +3,7 @@
 /*
  * This file is part of the ElaoAdminBundle.
  *
- * (c) 2014 Elao <contact@elao.com>
+ * (c) 2016 Elao <contact@elao.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,6 +20,32 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
     /**
+     * Administration configurators
+     *
+     * @var Elao\Bundle\AdminBundle\Behaviour\AdministrationConfiguratorInterface[]
+     */
+    private $administrationConfigurators;
+
+    /**
+     * Action factories
+     *
+     * @var Elao\Bundle\AdminBundle\Behaviour\ActionFactoryInterface[]
+     */
+    private $actionFactories;
+
+    /**
+     * Constructor.
+     *
+     * @param array $administrationConfigurators
+     * @param array $actionFactories
+     */
+    public function __construct(array $administrationConfigurators, array $actionFactories)
+    {
+        $this->administrationConfigurators = $administrationConfigurators;
+        $this->actionFactories = $actionFactories;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getConfigTreeBuilder()
@@ -27,49 +53,48 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('elao_admin');
 
-        $rootNode
+        $administrationNodeBuilder = $rootNode
             ->children()
+                ->booleanNode('doctrine_service_repositories')
+                    ->info('Enabled Doctrine service repositories feature')
+                    ->defaultFalse()
+                ->end()
                 ->arrayNode('administrations')
                     ->useAttributeAsKey('name')
                     ->prototype('array')
-                        ->children()
-                            ->arrayNode('options')
-                                ->isRequired()
-                                ->cannotBeEmpty()
-                                ->children()
-                                    ->scalarNode('model')
-                                        ->isRequired()
-                                        ->cannotBeEmpty()
-                                    ->end()
-                                    ->scalarNode('model_manager')
-                                        ->defaultValue('elao_admin.model_manager.doctrine')
-                                    ->end()
-                                    ->scalarNode('route_resolver')
-                                        ->defaultValue('elao_admin.route_resolver')
-                                    ->end()
-                                ->end()
-                            ->end()
+                        ->addDefaultsIfNotSet()
+                        ->children();
+
+        foreach ($this->administrationConfigurators as $configurator) {
+            $configurator->configure($administrationNodeBuilder);
+        }
+
+        $actionNodeBuilder = $administrationNodeBuilder
                             ->arrayNode('actions')
                                 ->isRequired()
+                                ->disallowNewKeysInSubsequentConfigs()
                                 ->cannotBeEmpty()
                                 ->useAttributeAsKey('name')
                                 ->prototype('array')
-                                    ->addDefaultsIfNotSet()
-                                    ->children()
-                                        ->scalarNode('type')
-                                            ->defaultNull()
-                                        ->end()
-                                        ->variableNode('options')
-                                            ->treatNullLike([])
-                                            ->defaultValue([])
-                                        ->end()
+                                    ->children();
+
+        foreach ($this->actionFactories as $factory) {
+            $factoryNode = $actionNodeBuilder
+                ->arrayNode($factory->getKey())
+                ->canBeUnset()
+            ;
+            $factory->addConfiguration($factoryNode);
+        }
+
+        $actionNodeBuilder
                                     ->end()
                                 ->end()
                             ->end()
                         ->end()
                     ->end()
                 ->end()
-            ->end();
+            ->end()
+        ;
 
         return $treeBuilder;
     }

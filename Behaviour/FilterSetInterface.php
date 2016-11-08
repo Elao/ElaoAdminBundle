@@ -11,17 +11,15 @@
 
 namespace Elao\Bundle\AdminBundle\Behaviour;
 
-use Symfony\Component\HttpFoundation\Request;
-
 /**
- * Represent an executable action
+ * Filter set interface
  */
-interface ActionInterface
+interface FilterSetInterface
 {
     /**
-     * Return the http response
+     * Returns an array of filters for the model manager
      *
-     * @return Symfony\Component\HttpFoundation\Response
+     * @return array
      */
-    public function getResponse(Request $request);
+    public function getFilters();
 }

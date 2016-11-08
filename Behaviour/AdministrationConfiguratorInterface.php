@@ -11,17 +11,17 @@
 
 namespace Elao\Bundle\AdminBundle\Behaviour;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 
 /**
- * Represent an executable action
+ * Complete administrations configuration.
  */
-interface ActionInterface
+interface AdministrationConfiguratorInterface
 {
     /**
-     * Return the http response
+     * Configure node definition.
      *
-     * @return Symfony\Component\HttpFoundation\Response
+     * @param NodeBuilder $node
      */
-    public function getResponse(Request $request);
+    public function configure(NodeBuilder $node);
 }

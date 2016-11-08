@@ -3,7 +3,7 @@
 /*
  * This file is part of the ElaoAdminBundle.
  *
- * (c) 2014 Elao <contact@elao.com>
+ * (c) 2016 Elao <contact@elao.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -23,7 +23,7 @@ class ActionNotFoundException extends Exception
      *
      * @var string
      */
-    const MESSAGE_FORMAT = 'Unkown action "%s", availables actions are: %s.';
+    const MESSAGE_FORMAT = 'Unkown action "%s" in "%s", availables actions are: %s.';
 
     /**
      * Create an ActionNotFoundException
@@ -33,9 +33,9 @@ class ActionNotFoundException extends Exception
      *
      * @return ActionNotFoundException
      */
-    public static function create($action, array $actions, $code = 0, Exception $previous = null)
+    public static function create($name, $action, array $actions, $code = 0, Exception $previous = null)
     {
-        $message = sprintf(static::MESSAGE_FORMAT, $action, implode(', ', $actions));
+        $message = sprintf(static::MESSAGE_FORMAT, $action, $name, implode(', ', $actions));
 
         return new ActionNotFoundException($message, $code, $previous);
     }

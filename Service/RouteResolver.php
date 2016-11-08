@@ -3,7 +3,7 @@
 /*
  * This file is part of the ElaoAdminBundle.
  *
- * (c) 2014 Elao <contact@elao.com>
+ * (c) 2016 Elao <contact@elao.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,16 +15,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Elao\Bundle\AdminBundle\Behaviour\RouteResolverInterface;
 use Elao\Bundle\AdminBundle\Exception\ActionNotFoundException;
+use Elao\Bundle\AdminBundle\Exception\AdministrationNotFoundException;
 
 /**
- * Workflow Manager
+ * Rotue resolver
  */
 class RouteResolver implements RouteResolverInterface
 {
     /**
      * The router
      *
-     * @var \Symfony\Component\Routing\RouterInterface
+     * @var RouterInterface
      */
     protected $router;
 
@@ -38,59 +39,54 @@ class RouteResolver implements RouteResolverInterface
     /**
      * Constructor
      *
-     * @param \Symfony\Component\Routing\RouterInterface $router
+     * @param RouterInterface $router
      */
     public function __construct(RouterInterface $router)
     {
-        $this->router  = $router;
+        $this->router = $router;
         $this->actions = [];
     }
 
     /**
-     * Add action
-     *
-     * @param string $alias
-     * @param array $route
+     * {@inheritdoc}
      */
-    public function addAction($alias, array $route)
+    public function addRoute($name, $alias, array $route)
     {
-        $this->actions[$alias] = $route;
-    }
-
-    /**
-     * Get action by alias
-     *
-     * @param string $alias
-     *
-     * @return array
-     */
-    public function getAction($alias)
-    {
-        if (!isset($this->actions[$alias])) {
-            throw ActionNotFoundException::create($alias, array_keys($this->actions));
+        if (!isset($this->actions[$name])) {
+            $this->actions[$name] = [];
         }
 
-        return $this->actions[$alias];
+        $this->actions[$name][$alias] = $route;
     }
 
     /**
-     * Get url for the given action
-     *
-     * @param string $action
-     * @param Request $request
-     * @param mixed $data
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getUrl($action, Request $request, $data)
+    public function getRoute($name, $alias)
     {
-        $action = $this->getAction($action);
+        if (!isset($this->actions[$name])) {
+            throw AdministrationNotFoundException::create($name, array_keys($this->actions));
+        }
+
+        if (!isset($this->actions[$name][$alias])) {
+            throw ActionNotFoundException::create($name, $alias, array_keys($this->actions[$name]));
+        }
+
+        return $this->actions[$name][$alias];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUrl($name, $alias, array $parameters = [])
+    {
+        $route = $this->getRoute($name, $alias);
 
         return $this->getRouteUrl(
-            $action['name'],
+            $route['name'],
             array_merge(
-                $action['parameters'],
-                ['id' => $data->getId()]
+                $route['parameters'],
+                $parameters
             )
         );
     }

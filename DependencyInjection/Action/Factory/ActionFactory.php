@@ -3,71 +3,52 @@
 /*
  * This file is part of the ElaoAdminBundle.
  *
- * (c) 2014 Elao <contact@elao.com>
+ * (c) 2016 Elao <contact@elao.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Elao\Bundle\AdminBundle\DependencyInjection\ActionConfiguration;
+namespace Elao\Bundle\AdminBundle\DependencyInjection\Action\Factory;
 
-use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
-use Elao\Bundle\AdminBundle\DependencyInjection\Model\Administration;
-use Elao\Bundle\AdminBundle\DependencyInjection\Model\Action;
+use Elao\Bundle\AdminBundle\Behaviour\ActionFactoryInterface;
+use Elao\Bundle\AdminBundle\Utils\Word;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Handle routing configuration
+ * Abstract Action Factory
  */
-abstract class ActionConfiguration implements ConfigurationInterface
+abstract class ActionFactory implements ActionFactoryInterface
 {
     /**
-     * Action
+     * Configuration
      *
-     * @var Action
+     * @var array
      */
-    protected $action;
+    protected $config;
 
     /**
-     * Service Id
+     * Route configuration
      *
-     * @var string
+     * @var array
      */
-    protected $serviceId;
+    protected $route;
 
     /**
-     * Constructor
+     * Security restriction
      *
-     * @param Action $action
-     * @param string $serviceId
+     * @var null|string
      */
-    public function __construct(Action $action, $serviceId)
+    protected $security = null;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addConfiguration(NodeDefinition $node)
     {
-        $this->action    = $action;
-        $this->serviceId = $serviceId;
-    }
-
-    /**
-     * Get config tree builder
-     *
-     * @return TreeBuilder
-     */
-    public function getConfigTreeBuilder()
-    {
-        return $this->buildConfiguration();
-    }
-
-    /**
-     * Build
-     */
-    protected function buildConfiguration()
-    {
-        $treeBuilder       = new TreeBuilder;
-        $parametersBuilder = new TreeBuilder;
-        $rootNode          = $treeBuilder->root('options');
-
-        $rootNode
+        $node
             ->children()
                 ->arrayNode('route')
                     ->addDefaultsIfNotSet()
@@ -79,10 +60,6 @@ abstract class ActionConfiguration implements ConfigurationInterface
                         ->scalarNode('pattern')
                             ->cannotBeEmpty()
                             ->defaultValue($this->getRoutePattern())
-                        ->end()
-                        ->scalarNode('controller')
-                            ->cannotBeEmpty()
-                            ->defaultValue($this->getRouteController())
                         ->end()
                         ->arrayNode('parameters')
                             ->defaultValue($this->getRouteParameters())
@@ -113,35 +90,92 @@ abstract class ActionConfiguration implements ConfigurationInterface
                     ->info('Add a security expression to secure the action. See accepted format: http://symfony.com/doc/master/bundles/SensioFrameworkExtraBundle/annotations/security.html')
                     ->example("has_role('ROLE_ADMIN')")
                 ->end()
-                ->append(
-                    $this->configureParametersNode($parametersBuilder->root('parameters'))
-                )
             ->end()
         ;
-
-        return $treeBuilder;
     }
 
     /**
-     * Configure parameters node
-     *
-     * @param NodeParentInterface $node
+     * {@inheritdoc}
      */
-    protected function configureParametersNode(NodeParentInterface $node)
+    public function processConfig(array $rawConfig, array $administration, $name, $alias)
     {
-        $tree = $node->addDefaultsIfNotSet()->children();
+        $config = array_merge(
+            $this->processRawConfig(
+                array_merge($administration, $rawConfig),
+                $this->getTokens($name, $alias)
+            ),
+            ['name' => $name, 'alias' => $alias]
+        );
 
-        return $this->buildParametersTree($tree)->end();
+        $this->route = $config['route'];
+        $this->security = isset($config['security']) ? $config['security'] : null;
+        $this->config = array_diff_key($config, array_flip(['route', 'security']));
     }
 
     /**
-     * Build parameters tree
-     *
-     * @param NodeParentInterface $node
+     * {@inheritdoc}
      */
-    protected function buildParametersTree(NodeParentInterface $node)
+    public function getRoute() {
+        return $this->route;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSecurity() {
+        return $this->security;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureAction(Definition $definition)
     {
-        return $node;
+        // Configure your action service definition
+    }
+
+    /**
+     * Dynamize configuration with tokens
+     *
+     * @param array $config
+     * @param array $tokens
+     *
+     * @return array
+     */
+    protected function processRawConfig(array $config, array $tokens)
+    {
+        foreach ($config as $key => $value) {
+            if (is_array($value)) {
+                $config[$key] = $this->processRawConfig($value, $tokens);
+            } elseif (is_string($value)) {
+                $config[$key] = str_replace(array_keys($tokens), array_values($tokens), $value);
+            }
+        }
+
+        return $config;
+    }
+
+    /**
+     * Get remplacmeent tokens
+     *
+     * @param string $name The name of the model
+     * @param string $action The alias of the action
+     *
+     * @return array
+     */
+    protected function getTokens($name, $alias)
+    {
+        return [
+            '%name%' => Word::lowerCase($name, false),
+            '%names%' => Word::lowerCase($name, true),
+            '%Name%' => Word::camelCase($name, false),
+            '%Names%' => Word::camelCase($name, true),
+            '%-name-%' => Word::url($name, false),
+            '%-names-%' => Word::url($name, true),
+            '%alias%' => Word::lowerCase($alias),
+            '%Alias%' => Word::camelCase($alias),
+            '%-alias-%' => Word::url($alias),
+        ];
     }
 
     /**
@@ -157,13 +191,6 @@ abstract class ActionConfiguration implements ConfigurationInterface
      * @return string
      */
     abstract protected function getRoutePattern();
-
-    /**
-     * Get default controller for route dynamically
-     *
-     * @return string
-     */
-    abstract protected function getRouteController();
 
     /**
      * Get default parameters for route dynamically

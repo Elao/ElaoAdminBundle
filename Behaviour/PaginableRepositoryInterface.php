@@ -11,17 +11,16 @@
 
 namespace Elao\Bundle\AdminBundle\Behaviour;
 
-use Symfony\Component\HttpFoundation\Request;
-
 /**
- * Represent an executable action
+ * Adds Pagination to RepositoryInterface
  */
-interface ActionInterface
-{
+interface PaginableRepositoryInterface {
     /**
-     * Return the http response
+     * Create an iterable for pagination
      *
-     * @return Symfony\Component\HttpFoundation\Response
+     * @param array $parameter Filters
+     *
+     * @param array|QueryBuilder $model
      */
-    public function getResponse(Request $request);
+    public function paginate(array $parameters = []);
 }

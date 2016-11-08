@@ -3,7 +3,7 @@
 /*
  * This file is part of the ElaoAdminBundle.
  *
- * (c) 2014 Elao <contact@elao.com>
+ * (c) 2016 Elao <contact@elao.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,30 +19,32 @@ use Symfony\Component\HttpFoundation\Request;
 interface RouteResolverInterface
 {
     /**
-     * Add action
+     * Add action route
      *
-     * @param string $alias
-     * @param array $route
+     * @param string $name Administration name
+     * @param string $alias Action alias
+     * @param array $route Route configuration
      */
-    public function addAction($alias, array $route);
+    public function addRoute($name, $alias, array $route);
 
     /**
-     * Get action by alias
+     * Get route by action
      *
-     * @param string $alias
+     * @param string $name Administration name
+     * @param string $alias Action alias
      *
      * @return array
      */
-    public function getAction($alias);
+    public function getRoute($name, $alias);
 
     /**
      * Get url for the given action
      *
-     * @param string $action
-     * @param Request $request
-     * @param mixed $data
+     * @param string $name Administration name
+     * @param string $alias Action alias
+     * @param array $parameters Route
      *
      * @return string
      */
-    public function getUrl($action, Request $request, $data);
+    public function getUrl($name, $alias, array $parameters = []);
 }
