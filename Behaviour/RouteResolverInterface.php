@@ -42,9 +42,10 @@ interface RouteResolverInterface
      *
      * @param string $name Administration name
      * @param string $alias Action alias
-     * @param array $parameters Route
+     * @param array $parameters Route parameters
+     * @param array $context Context
      *
      * @return string
      */
-    public function getUrl($name, $alias, array $parameters = []);
+    public function getUrl($name, $alias, array $parameters = [], array $context = []);
 }

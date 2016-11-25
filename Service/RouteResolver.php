@@ -78,16 +78,30 @@ class RouteResolver implements RouteResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function getUrl($name, $alias, array $parameters = [])
+    public function getUrl($name, $alias, array $parameters = [], array $context = [])
     {
         $route = $this->getRoute($name, $alias);
 
         return $this->getRouteUrl(
             $route['name'],
-            array_merge(
-                $route['parameters'],
-                $parameters
-            )
+            $this->getParameters($route, $parameters, $context)
+        );
+    }
+
+    /**
+     * Get the parameters required for the given route from the context
+     *
+     * @param array $route
+     * @param array $parameters
+     * @param array $context
+     *
+     * @return array
+     */
+    protected function getParameters(array $route, array $parameters = [], array $context = [])
+    {
+        return array_merge(
+            $route['parameters'],
+            $parameters
         );
     }
 
