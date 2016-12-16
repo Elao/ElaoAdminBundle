@@ -166,15 +166,15 @@ abstract class ActionFactory implements ActionFactoryInterface
     protected function getTokens($name, $alias)
     {
         return [
-            '%name%' => Word::lowerCase($name, false),
-            '%names%' => Word::lowerCase($name, true),
-            '%Name%' => Word::camelCase($name, false),
-            '%Names%' => Word::camelCase($name, true),
-            '%-name-%' => Word::url($name, false),
-            '%-names-%' => Word::url($name, true),
-            '%alias%' => Word::lowerCase($alias),
-            '%Alias%' => Word::camelCase($alias),
-            '%-alias-%' => Word::url($alias),
+            '[name]' => Word::lowerCase($name, false),
+            '[names]' => Word::lowerCase($name, true),
+            '[Name]' => Word::camelCase($name, false),
+            '[Names]' => Word::camelCase($name, true),
+            '[-name-]' => Word::url($name, false),
+            '[-names-]' => Word::url($name, true),
+            '[alias]' => Word::lowerCase($alias),
+            '[Alias]' => Word::camelCase($alias),
+            '[-alias-]' => Word::url($alias),
         ];
     }
 
