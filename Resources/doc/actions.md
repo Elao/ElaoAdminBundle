@@ -105,15 +105,15 @@ class MyListActionFactory extends ActionFactory
         $node
             ->children()
                 ->scalarNode('repository')
-                    ->defaultValue('app.repository.%name%') // e.g. 'app.repository.post'
+                    ->defaultValue('app.repository.[name]') // e.g. 'app.repository.post'
                     ->cannotBeEmpty()
                 ->end()
                 ->scalarNode('template')
-                    ->defaultValue(':%name%:%alias%.html.twig') // e.g. 'post:list.html.twig'
+                    ->defaultValue(':[name]:[alias].html.twig') // e.g. 'post:list.html.twig'
                     ->cannotBeEmpty()
                 ->end()
                 ->scalarNode('template_variable')
-                    ->defaultValue('%names%') // e.g. 'posts'
+                    ->defaultValue('[names]') // e.g. 'posts'
                     ->cannotBeEmpty()
                 ->end()
             ->end()
@@ -140,7 +140,7 @@ class MyListActionFactory extends ActionFactory
      */
     protected function getRouteName()
     {
-        return '%name%_%alias%'; // e.g. 'post_list'
+        return '[name]_[alias]'; // e.g. 'post_list'
     }
 
     /**
@@ -148,7 +148,7 @@ class MyListActionFactory extends ActionFactory
      */
     protected function getRoutePattern()
     {
-        return '/%-names-%'; // e.g. '/posts'
+        return '/[-names-]'; // e.g. '/posts'
     }
 
     /**
@@ -169,15 +169,15 @@ This allow you to make your Action configuration vary over the administration na
 
 Default tokens (example for the administration "user" and the action "list"):
 
-- `%name%`: "user"
-- `%names%`: "users"
-- `%Name%`: "User"
-- `%Names%`: "Users"
-- `%-name-%`: "user" (url safe, meant for route pattern)
-- `%-names-%`: "users" (url safe, meant for route pattern)
-- `%alias%`: "list"
-- `%Alias%`: "List"
-- `%-alias-%`: "list" (url safe, meant for route pattern)
+- `[name]`: "user"
+- `[names]`: "users"
+- `[Name]`: "User"
+- `[Names]`: "Users"
+- `[-name-]`: "user" (url safe, meant for route pattern)
+- `[-names-]`: "users" (url safe, meant for route pattern)
+- `[alias]`: "list"
+- `[Alias]`: "List"
+- `[-alias-]`: "list" (url safe, meant for route pattern)
 
 ## Register actions
 
